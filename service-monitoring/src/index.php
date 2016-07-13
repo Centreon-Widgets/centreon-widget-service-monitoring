@@ -94,13 +94,13 @@ $stateLabels = array(0 => "Ok",
 // Build Query
 $query = "SELECT SQL_CALC_FOUND_ROWS h.host_id,
 		h.name as hostname,
-        s.latency,
-        s.execution_time,
+    s.latency,
+    s.execution_time,
 		h.state as h_state,
 		s.service_id,
 		s.description,
 		s.state as s_state,
-        h.state_type as state_type,
+    h.state_type as state_type,
 		s.last_hard_state,
 		s.output,
 		s.scheduled_downtime_depth as s_scheduled_downtime_depth,
@@ -124,7 +124,7 @@ $query = "SELECT SQL_CALC_FOUND_ROWS h.host_id,
 		s.notes_url as s_notes_url, 
 		cv2.value AS criticality_id,
 		cv.value AS criticality_level,
-        h.icon_image
+    h.icon_image
 ";
 $query .= " FROM hosts h JOIN instances i ON h.instance_id=i.instance_id, ";
 $query .= " services s ";
@@ -335,9 +335,15 @@ while ($row = $res->fetchRow()) {
         } elseif ($key == "output") {
             $value = substr($value, 0, $outputLength);
         } elseif (($key == "h_action_url" || $key == "h_notes_url") && $value) {
+            if (!preg_match("/(^http[s]?)|(^\/\/)/", $value)) {
+                $value = '//' . $value;
+            }
             $value = CentreonUtils::escapeSecure($hostObj->replaceMacroInString($row['hostname'], $value));
         } elseif (($key == "s_action_url" || $key == "s_notes_url") && $value) {
-            $value = $hostObj->replaceMacroInString($row['hostname'], $value);
+            if (!preg_match("/(^http[s]?)|(^\/\/)/", $value)) {
+                $value = '//' . $value;
+            }
+            $value = CentreonUtils::escapeSecure($hostObj->replaceMacroInString($row['hostname'], $value));
             $value = CentreonUtils::escapeSecure($svcObj->replaceMacroInString($row['service_id'], $value));
         } elseif ($key == "criticality_id" && $value != '') {
             $critData = $criticality->getData($row["criticality_id"], 1);
