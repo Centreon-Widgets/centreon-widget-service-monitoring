@@ -2,16 +2,15 @@
     <head>
 	<title>Service Monitoring</title>
     	<link href="../../include/common/javascript/jquery/plugins/pagination/pagination.css" rel="stylesheet" type="text/css"/>
-        <link href="../../Themes/Centreon-2/Color/blue_css.php" rel="stylesheet" type="text/css"/>
         <link href="../../Themes/Centreon-2/style.css" rel="stylesheet" type="text/css"/>
-
-
     </head>
     <body>
         {if $preferences.more_views == 1}
             <div id='actionBar'>
                 <div id='toolBar' style='float:left;'></div>
                 <div id='pagination' class="pagination" style='float:left;text-align:right;margin:12px 0px 10px 12px;'></div>
+                <a href='./src/export.php?widgetId={$widgetId}' class="btc bt_success" style="float:left; margin-top: 8px;">Export</a>
+
             </div>
         {/if}
         <div id='serviceMonitoringTable'></div>
