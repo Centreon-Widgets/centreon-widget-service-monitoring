@@ -209,6 +209,17 @@ if (isset($preferences['state_type_filter']) && $preferences['state_type_filter'
     }
 }
 
+if (isset($preferences['poller_search']) && $preferences['poller_search'] != "") {
+    $tab = split(" ", $preferences['poller_search']);
+    $op = $tab[0];
+    if (isset($tab[1])) {
+        $search = $tab[1];
+    }
+    if ($op && isset($search) && $search != "") {
+        $query = CentreonUtils::conditionBuilder($query, "i.name ".CentreonUtils::operandToMysqlFormat($op)." '".$dbb->escape($search)."' ");
+    }
+}
+
 if (isset($preferences['poller']) && $preferences['poller']) {
     $query = CentreonUtils::conditionBuilder($query, 
     " i.instance_id = ".$dbb->escape($preferences['poller'])."");
