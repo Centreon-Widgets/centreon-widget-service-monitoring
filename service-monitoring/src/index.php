@@ -338,6 +338,36 @@ while ($row = $res->fetchRow()) {
             $data[$row['host_id']."_".$row['service_id']]['hcolor'] = $stateHColors[$value];
             $value = $stateLabels[$value];
         } elseif ($key == "output") {
+            $long_output="";
+            $short_output="";
+            $value=str_replace("\n", '\n', $value);
+            $tmp_output=explode('\n', $value);
+            if (count($tmp_output)) {
+              $i = 0;
+              while (isset($tmp_output[$i])) {
+                if (!$i) {
+                  $short_output = htmlentities($tmp_output[$i]);
+                } else {
+                  $long_output .= htmlentities($tmp_output[$i]) . " ";
+                }
+                $i++;
+              }
+            }
+            else {
+              $short_output=$value;
+            }
+            
+            if (!isset($preferences["display_ext_output"]) || !$preferences["display_ext_output"]) {
+              $value = $short_output;
+            }
+            else {
+              if ($long_output != "") {
+                $value = $short_output . " ( " . $long_output . ")";
+              }
+              else {
+                $value = $short_output;
+              }
+            }
             $value = substr($value, 0, $outputLength);
         } elseif (($key == "h_action_url" || $key == "h_notes_url") && $value) {
             $value = CentreonUtils::escapeSecure($hostObj->replaceMacroInString($row['hostname'], $value));
