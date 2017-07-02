@@ -33,6 +33,7 @@
       <option value="softonly" label="Soft Only"/>
     </preference>
     <preference label="Poller" name="poller" defaultValue="" type="poller"/>
+    <preference label="Poller Filter" name="poller_search" defaultValue="" type="compare"/>
     <preference label="Hostgroup" name="hostgroup" defaultValue="" type="hostgroup"/>
     <preference label="Servicegroup" name="servicegroup" defaultValue="" type="servicegroup"/>
     <preference label="Results" name="entries" defaultValue="10" type="range" min="10" max="100" step="10"/>
