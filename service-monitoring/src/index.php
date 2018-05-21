@@ -46,9 +46,6 @@ require_once $centreon_path . 'www/class/centreonService.class.php';
 require_once $centreon_path . 'www/class/centreonMedia.class.php';
 require_once $centreon_path . 'www/class/centreonCriticality.class.php';
 
-$smartyDir = __DIR__ . '/../../../../vendor/smarty/smarty/';
-require_once $smartyDir . 'libs/Smarty.class.php';
-
 CentreonSession::start(1);
 if (!isset($_SESSION['centreon']) || !isset($_REQUEST['widgetId']) || !isset($_REQUEST['page'])) {
     exit;
