@@ -45,7 +45,6 @@ require_once $centreon_path . 'www/class/centreonHost.class.php';
 require_once $centreon_path . 'www/class/centreonService.class.php';
 require_once $centreon_path . 'www/class/centreonMedia.class.php';
 require_once $centreon_path . 'www/class/centreonCriticality.class.php';
-require_once $centreon_path ."GPL_LIB/Smarty/libs/Smarty.class.php";
 
 CentreonSession::start(1);
 if (!isset($_SESSION['centreon']) || !isset($_REQUEST['widgetId']) || !isset($_REQUEST['page'])) {
@@ -138,7 +137,7 @@ $query .= " AND h.name NOT LIKE '_Module_%' ";
 $query .= " AND s.enabled = 1 ";
 $query .= " AND h.enabled = 1 ";
 if (isset($preferences['host_name_search']) && $preferences['host_name_search'] != "") {
-    $tab = split(" ", $preferences['host_name_search']);
+    $tab = explode(' ', $preferences['host_name_search']);
     $op = $tab[0];
     if (isset($tab[1])) {
         $search = $tab[1];
@@ -148,7 +147,7 @@ if (isset($preferences['host_name_search']) && $preferences['host_name_search'] 
     }
 }
 if (isset($preferences['service_description_search']) && $preferences['service_description_search'] != "") {
-    $tab = split(" ", $preferences['service_description_search']);
+    $tab = explode(' ', $preferences['service_description_search']);
     $op = $tab[0];
     if (isset($tab[1])) {
         $search = $tab[1];
@@ -257,8 +256,8 @@ if (isset($preferences['servicegroup']) && $preferences['servicegroup']) {
 }
 if (isset($preferences["display_severities"]) && $preferences["display_severities"] 
     && isset($preferences['criticality_filter']) && $preferences['criticality_filter'] != "") {
-  $tab = split(",", $preferences['criticality_filter']);
-  $labels = "";
+  $tab = explode(',', $preferences['criticality_filter']);
+  $labels = '';
   foreach ($tab as $p) {
     if ($labels != '') {
       $labels .= ',';
@@ -267,7 +266,7 @@ if (isset($preferences["display_severities"]) && $preferences["display_severitie
   }
   $query2 = "SELECT sc_id FROM service_categories WHERE sc_name IN (".$labels.")";
   $RES = $db->query($query2);
-  $idC = "";
+  $idC = '';
   while ($d1 = $RES->fetchRow()) {
     if ($idC != '') {
       $idC .= ",";
@@ -285,7 +284,7 @@ if (!$centreon->user->admin) {
 	AND acl.group_id IN ($groupList)";
 }
 if (isset($preferences['output_search']) && $preferences['output_search'] != "") {
-    $tab = split(" ", $preferences['output_search']);
+    $tab = explode(' ', $preferences['output_search']);
     $op = $tab[0];
     if (isset($tab[1])) {
         $search = $tab[1];
@@ -317,7 +316,11 @@ if (isset($preferences['order_by']) && $preferences['order_by'] != "") {
 }
 
 $query .= "GROUP BY hostname, description ";
-$query .= "ORDER BY $orderby";
+
+if (trim($orderby)) {
+    $query .= "ORDER BY $orderby";
+}
+
 $query .= " LIMIT ".($page * $preferences['entries']).",".$preferences['entries'];
 $res = $dbb->query($query);
 if (PEAR::isError($res)) {
