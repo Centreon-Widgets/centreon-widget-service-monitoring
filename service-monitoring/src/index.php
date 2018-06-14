@@ -387,7 +387,7 @@ while ($row = $res->fetchRow()) {
     $data[$row['host_id']."_".$row['service_id']]['output'] = substr($row['output'], 0, $outputLength);
     
     // h_action_url
-    $valueHActionUrl = $row['h_notes_url'];
+    $valueHActionUrl = $row['h_action_url'];
     if ($valueHActionUrl) {
         if (preg_match('#^\./(.+)#', $valueHActionUrl, $matches)) {
             $valueHActionUrl = '/' . $centreonWebPath . '/' . $matches[1];
@@ -395,7 +395,7 @@ while ($row = $res->fetchRow()) {
             $valueHActionUrl = '//' . $valueHActionUrl;
         }
         $valueHActionUrl = CentreonUtils::escapeSecure($hostObj->replaceMacroInString($row['hostname'], $valueHActionUrl));
-        $data[$row['host_id'] . "_" . $row['service_id']]['h_notes_url'] = $valueHActionUrl;
+        $data[$row['host_id'] . "_" . $row['service_id']]['h_action_url'] = $valueHActionUrl;
     }
     
     // h_notes_url
@@ -420,7 +420,7 @@ while ($row = $res->fetchRow()) {
         }
         $valueSActionUrl = CentreonUtils::escapeSecure($hostObj->replaceMacroInString($row['hostname'], $valueSActionUrl));
         $valueSActionUrl = CentreonUtils::escapeSecure($svcObj->replaceMacroInString($row['service_id'], $valueSActionUrl));
-        $data[$row['host_id'] . "_" . $row['service_id']]['s_notes_url'] = $valueSActionUrl;
+        $data[$row['host_id'] . "_" . $row['service_id']]['s_action_url'] = $valueSActionUrl;
     }
     
     // s_notes_url
