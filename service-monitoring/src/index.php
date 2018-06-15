@@ -385,6 +385,8 @@ $hostObj = new CentreonHost($db);
 $svcObj = new CentreonService($db);
 $gmt = new CentreonGMT($db);
 $gmt->getMyGMTFromSession(session_id(), $db);
+$allowedActionProtocols = ['http[s]?', '//', 'ssh', 'rdp', 'ftp', 'sftp'];
+$allowedProtocolsRegex = '#(^'. implode(')|(^', $allowedActionProtocols) .')#'; // String starting with one of these protocols
 
 while ($row = $res->fetch()) {
     foreach ($row as $key => $value) {
@@ -441,9 +443,10 @@ while ($row = $res->fetch()) {
     if ($valueHActionUrl) {
         if (preg_match('#^\./(.+)#', $valueHActionUrl, $matches)) {
             $valueHActionUrl = '/' . $centreonWebPath . '/' . $matches[1];
-        } elseif (!preg_match("#(^http[s]?)|(^//)#", $valueHActionUrl)) {
+        } elseif (!preg_match($allowedProtocolsRegex, $valueHActionUrl)) {
             $valueHActionUrl = '//' . $valueHActionUrl;
         }
+
         $valueHActionUrl = CentreonUtils::escapeSecure($hostObj->replaceMacroInString($row['hostname'], $valueHActionUrl));
         $data[$row['host_id'] . "_" . $row['service_id']]['h_action_url'] = $valueHActionUrl;
     }
@@ -453,9 +456,10 @@ while ($row = $res->fetch()) {
     if ($valueHNotesUrl) {
         if (preg_match('#^\./(.+)#', $valueHNotesUrl, $matches)) {
             $valueHNotesUrl = '/' . $centreonWebPath . '/' . $matches[1];
-        } elseif (!preg_match("#(^http[s]?)|(^//)#", $valueHNotesUrl)) {
+        } elseif (!preg_match($allowedProtocolsRegex, $valueHNotesUrl)) {
             $valueHNotesUrl = '//' . $valueHNotesUrl;
         }
+
         $valueHNotesUrl = CentreonUtils::escapeSecure($hostObj->replaceMacroInString($row['hostname'], $valueHNotesUrl));
         $data[$row['host_id'] . "_" . $row['service_id']]['h_notes_url'] = $valueHNotesUrl;
     }
