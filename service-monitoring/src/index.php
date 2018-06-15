@@ -243,7 +243,7 @@ if (isset($preferences['state_type_filter']) && $preferences['state_type_filter'
 if (isset($preferences['poller']) && $preferences['poller']) {
     $mainQueryParameters[] = [
         'parameter' => ':instance_id',
-        'value'     => $search,
+        'value'     => $preferences['poller'],
         'type'      => PDO::PARAM_INT
     ];
     $instanceIdCondition = ' i.instance_id = :instance_id';
@@ -253,7 +253,7 @@ if (isset($preferences['poller']) && $preferences['poller']) {
 if (isset($preferences['hostgroup']) && $preferences['hostgroup']) {
     $mainQueryParameters[] = [
         'parameter' => ':hostgroup_hg_id',
-        'value'     => $search,
+        'value'     => $preferences['hostgroup'],
         'type'      => PDO::PARAM_INT
     ];
     $hostgroupHgIdCondition = <<<SQL
@@ -284,7 +284,7 @@ SQL;
 
     $mainQueryParameters[] = [
         'parameter' => ':servicegroup_id',
-        'value'     => $search,
+        'value'     => $preferences['servicegroup'],
         'type'      => PDO::PARAM_INT
     ];
     $servicegroupIdCondition = <<<SQL
