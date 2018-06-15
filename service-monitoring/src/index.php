@@ -476,7 +476,7 @@ while ($row = $res->fetch()) {
     if ($valueSActionUrl) {
         if (preg_match('#^\./(.+)#', $valueSActionUrl, $matches)) {
             $valueSActionUrl = '/' . $centreonWebPath . '/' . $matches[1];
-        } elseif (!preg_match("#(^http[s]?)|(^//)#", $valueSActionUrl)) {
+        } elseif (!preg_match($allowedProtocolsRegex, $valueSActionUrl)) {
             $valueSActionUrl = '//' . $valueSActionUrl;
         }
         $valueSActionUrl = CentreonUtils::escapeSecure($hostObj->replaceMacroInString($row['hostname'], $valueSActionUrl));
@@ -489,7 +489,7 @@ while ($row = $res->fetch()) {
     if ($valueSNotesUrl) {
         if (preg_match('#^\./(.+)#', $valueSNotesUrl, $matches)) {
             $valueSNotesUrl = '/' . $centreonWebPath . '/' . $matches[1];
-        } elseif (!preg_match("#(^http[s]?)|(^//)#", $valueSNotesUrl)) {
+        } elseif (!preg_match($allowedProtocolsRegex, $valueSNotesUrl)) {
             $valueSNotesUrl = '//' . $valueSNotesUrl;
         }
         $valueSNotesUrl = CentreonUtils::escapeSecure($hostObj->replaceMacroInString($row['hostname'], $valueSNotesUrl));
