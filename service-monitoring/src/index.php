@@ -505,20 +505,23 @@ while ($row = $res->fetch()) {
     }
 
     if (isset($preferences['display_last_comment']) && $preferences['display_last_comment']) {
-        $commentSql = intval($row['s_scheduled_downtime_depth']) === 1 ?
-            'SELECT comment_data AS data FROM downtimes where host_id = ' . $row['host_id'] . ' AND service_id = ' . $row['service_id'] . ' ORDER BY entry_time DESC LIMIT 1' :
-            'SELECT data FROM comments where host_id = ' . $row['host_id'] . ' AND service_id = ' . $row['service_id'] . ' ORDER BY entry_time DESC LIMIT 1'
-        ;
-        $commentResult = $dbb->query($commentSql);
-        
+        $commentSql = 'SELECT data FROM comments where host_id = ' . $row['host_id'] . ' AND service_id = ' . $row['service_id'] . ' ORDER BY entry_time DESC LIMIT 1';
         $comment = '-';
+
+        if (intval($row['s_acknowledged']) === 1) { // Service is acknowledged
+            $commentSql = 'SELECT comment_data AS data FROM acknowledgements where host_id = ' . $row['host_id'] . ' AND service_id = ' . $row['service_id'] . ' ORDER BY entry_time DESC LIMIT 1';
+        } elseif (intval($row['s_scheduled_downtime_depth']) === 1) { // Service is in downtime
+            $commentSql = 'SELECT comment_data AS data FROM downtimes where host_id = ' . $row['host_id'] . ' AND service_id = ' . $row['service_id'] . ' ORDER BY entry_time DESC LIMIT 1';
+        }
+
+        $commentResult = $dbb->query($commentSql);
 
         while ($commentRow = $commentResult->fetch()) {
             $comment = substr($commentRow['data'], 0, $commentLength);
 
             unset($commentRow);
         }
-        
+
         $data[$row['host_id'] . '_' . $row['service_id']]['comment'] = $comment;
     }
 
