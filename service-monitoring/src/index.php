@@ -505,27 +505,17 @@ while ($row = $res->fetch()) {
     }
 
     if (isset($preferences['display_last_comment']) && $preferences['display_last_comment']) {
-        $commentSql = <<<SQL
-    SELECT data FROM comments 
-    where host_id = {$row['host_id']} AND service_id = {$row['service_id']} 
-    ORDER BY entry_time DESC LIMIT 1
-SQL;
+        $commentSql = 'SELECT data FROM comments';
         $comment = '-';
 
         if (intval($row['s_acknowledged']) === 1) { // Service is acknowledged
-            $commentSql = <<<SQL
-    SELECT comment_data AS data FROM acknowledgements
-    where host_id = {$row['host_id']} AND service_id = {$row['service_id']} 
-    ORDER BY entry_time DESC LIMIT 1
-SQL;
+            $commentSql = 'SELECT comment_data AS data FROM acknowledgements';
         } elseif (intval($row['s_scheduled_downtime_depth']) === 1) { // Service is in downtime
-            $commentSql = <<<SQL
-    SELECT comment_data AS data FROM downtimes
-    where host_id = {$row['host_id']} AND service_id = {$row['service_id']} 
-    ORDER BY entry_time DESC LIMIT 1
-SQL;
+            $commentSql = 'SELECT comment_data AS data FROM downtimes';
         }
 
+        $commentSql .= " WHERE host_id = {$row['host_id']} AND service_id = {$row['service_id']}";
+        $commentSql .= ' ORDER BY entry_time DESC LIMIT 1';
         $commentResult = $dbb->query($commentSql);
 
         while ($commentRow = $commentResult->fetch()) {
