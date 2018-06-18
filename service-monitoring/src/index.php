@@ -505,12 +505,21 @@ while ($row = $res->fetch()) {
     }
 
     if (isset($preferences['display_last_comment']) && $preferences['display_last_comment']) {
-        $res2 = $dbb->query('SELECT data FROM comments where host_id = ' . $row['host_id'] . ' AND service_id = ' . $row['service_id'] . ' ORDER BY entry_time DESC LIMIT 1');
-        if ($row2 = $res2->fetch()) {
-            $data[$row['host_id'] . '_' . $row['service_id']]['comment'] = substr($row2['data'], 0, $commentLength);
-        } else {
-            $data[$row['host_id'] . '_' . $row['service_id']]['comment'] = '-';
+        $commentSql = intval($row['s_scheduled_downtime_depth']) === 1 ?
+            'SELECT comment_data AS data FROM downtimes where host_id = ' . $row['host_id'] . ' AND service_id = ' . $row['service_id'] . ' ORDER BY entry_time DESC LIMIT 1' :
+            'SELECT data FROM comments where host_id = ' . $row['host_id'] . ' AND service_id = ' . $row['service_id'] . ' ORDER BY entry_time DESC LIMIT 1'
+        ;
+        $commentResult = $dbb->query($commentSql);
+        
+        $comment = '-';
+
+        while ($commentRow = $commentResult->fetch()) {
+            $comment = substr($commentRow['data'], 0, $commentLength);
+
+            unset($commentRow);
         }
+        
+        $data[$row['host_id'] . '_' . $row['service_id']]['comment'] = $comment;
     }
 
     $data[$row['host_id'] . '_' . $row['service_id']]['encoded_description'] = urlencode(
