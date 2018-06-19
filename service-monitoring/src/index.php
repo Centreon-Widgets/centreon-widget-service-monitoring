@@ -520,11 +520,13 @@ while ($row = $res->fetch()) {
 
         while ($commentRow = $commentResult->fetch()) {
             $comment = substr($commentRow['data'], 0, $commentLength);
+            $commentFull = $commentRow['data'];
 
             unset($commentRow);
         }
 
         $data[$row['host_id'] . '_' . $row['service_id']]['comment'] = $comment;
+        $data[$row['host_id'] . '_' . $row['service_id']]['commentFull'] = $commentFull;
     }
 
     $data[$row['host_id'] . '_' . $row['service_id']]['encoded_description'] = urlencode(

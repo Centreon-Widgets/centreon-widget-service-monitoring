@@ -60,7 +60,7 @@
                     </td>
                     <td class='ListColRight'>
                         <div style='float: right;'>
-                            {if $elem.h_scheduled_downtime_depth}<img src='{$centreon_web_path}img/icons/warning.png' class="ico-18">{/if}
+                            {if $elem.h_scheduled_downtime_depth}<a href="javascript:;" class="link_popup_volante"><span class="popup_content" style='display:none'>{$elem.commentFull}</span><img src='{$centreon_web_path}img/icons/warning.png' class="ico-18"></a>{/if}
                             {if $elem.h_acknowledged}<img src='{$centreon_web_path}img/icones/16x16/worker.gif' class="ico-18">{/if}
                             {if $elem.h_active_checks == 0}<img src='{$centreon_web_path}img/icons/never_checked.png' class="ico-18">{/if}
                             {if $elem.h_passive_checks}<img src='{$centreon_web_path}img/icons/passive_check.png' class="ico-18">{/if}
@@ -94,7 +94,7 @@
             </td>
             <td class='ListColRight'>
                 <div style='float: right;'>
-                    {if $elem.s_scheduled_downtime_depth}<img src='{$centreon_web_path}img/icons/warning.png' class="ico-18">{/if}
+                    {if $elem.s_scheduled_downtime_depth}<a href="javascript:;" class="link_popup_volante"><span class="popup_content" style='display:none'>{$elem.commentFull}</span><img src='{$centreon_web_path}img/icons/warning.png' class="ico-18"></a>{/if}
                     {if $elem.s_acknowledged}<img src='{$centreon_web_path}img/icons/technician.png' class="ico-18">{/if}
                     {if $elem.s_active_checks == 0 && $elem.s_passive_checks == 0}<img src='{$centreon_web_path}img/icons/never_checked.png' class="ico-18">{/if}
                     {if $elem.s_passive_checks == 1 && $elem.s_active_checks == 0}<img src='{$centreon_web_path}img/icons/passive_check.png' class="ico-18">{/if}
@@ -132,6 +132,7 @@
 	{/foreach}
     </table>
 </div>
+<div id="div_popup" class="popup_volante"></div>
 <script type="text/javascript">
     var nbRows = {$nbRows};
     var currentpage = {$page};
