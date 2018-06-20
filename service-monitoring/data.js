@@ -43,6 +43,13 @@ function loadPage()
                 var h = document.getElementById("serviceMonitoringTable").scrollHeight + 0;
                 parent.iResize(window.name, h);
             });
+            jQuery('.checkall').on('change', function () {
+                var chck = this.checked;
+                jQuery(this).parents().find(':checkbox').each(function () {
+                    jQuery(this).prop('checked', chck);
+                    clickedCb[jQuery(this).attr('id')] = chck;
+                });
+            });
         }
     });
     if (autoRefresh) {
@@ -59,24 +66,14 @@ function loadPage()
 function loadToolBar()
 {
     jQuery("#toolBar").load(
-            "./src/toolbar.php",
-            {
-                widgetId: widgetId
-            }
+        "./src/toolbar.php",
+        {
+            widgetId: widgetId
+        }
     );
 }
 
 jQuery(function () {
     loadToolBar();
     loadPage();
-    jQuery('.checkall').live('click', function () {
-        var chck = this.checked;
-        jQuery(this).parents().find(':checkbox').each(function () {
-            jQuery(this).attr('checked', chck);
-            clickedCb[jQuery(this).attr('id')] = chck;
-        });
-    });
-    jQuery(".selection").live('click', function () {
-        clickedCb[jQuery(this).attr('id')] = this.checked;
-    });
 });
