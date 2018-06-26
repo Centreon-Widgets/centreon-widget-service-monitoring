@@ -56,7 +56,8 @@ jQuery(function () {
 	    icn = 's';
 	}
         
-	jQuery("[name="+tmp[0]+"]").append('<span style="position: relative; float: right;" class="ui-icon ui-icon-triangle-1-'+icn+'"></span>');
+	if(orderby)
+	    jQuery("[name="+tmp[0]+"]").append('<span style="position: relative; float: right;" class="ui-icon ui-icon-triangle-1-'+icn+'"></span>');
 
 	function paginationCallback(page_index, jq)
 	{
