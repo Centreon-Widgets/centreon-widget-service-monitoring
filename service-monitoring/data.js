@@ -40,7 +40,11 @@ function loadPage()
     jQuery.ajax("./src/index.php?widgetId=" + widgetId + "&page=" + pageNumber, {
         success: function (htmlData) {
             jQuery("#serviceMonitoringTable").empty().append(htmlData).append(function() {
-                var h = document.getElementById("serviceMonitoringTable").scrollHeight + 0;
+                var horizontalScrollHeight = 0;
+                if ( $("#serviceMonitoringTable").outerWidth() < $("#serviceMonitoringTable").get(0).scrollWidth ) {
+                    horizontalScrollHeight = 20;
+                }
+                var h = document.getElementById("serviceMonitoringTable").scrollHeight + horizontalScrollHeight;
                 parent.iResize(window.name, h);
             });
             jQuery('.checkall').on('change', function () {
