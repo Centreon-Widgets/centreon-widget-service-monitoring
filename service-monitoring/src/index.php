@@ -34,9 +34,9 @@
  */
 
 require_once '../../require.php';
+require_once $centreon_path . 'bootstrap.php';
 require_once $centreon_path . 'www/class/centreon.class.php';
 require_once $centreon_path . 'www/class/centreonSession.class.php';
-require_once $centreon_path . 'www/class/centreonDB.class.php';
 require_once $centreon_path . 'www/class/centreonWidget.class.php';
 require_once $centreon_path . 'www/class/centreonDuration.class.php';
 require_once $centreon_path . 'www/class/centreonUtils.class.php';
@@ -51,7 +51,7 @@ if (!isset($_SESSION['centreon']) || !isset($_REQUEST['widgetId']) || !isset($_R
     exit;
 }
 
-$db = new CentreonDB();
+$db = $dependencyInjector['configuration_db'];
 if (CentreonSession::checkSession(session_id(), $db) == 0) {
     exit();
 }
@@ -69,7 +69,7 @@ $centreonWebPath = trim($centreon->optGen['oreon_web_path'], '/');
 $widgetId = $_REQUEST['widgetId'];
 $page = $_REQUEST['page'];
 
-$dbb = new CentreonDB('centstorage');
+$dbb = $dependencyInjector['realtime_db'];
 $widgetObj = new CentreonWidget($centreon, $db);
 $preferences = $widgetObj->getWidgetPreferences($widgetId);
 
@@ -345,8 +345,7 @@ if (isset($preferences['output_search']) && $preferences['output_search'] != "")
 }
 $orderBy = 'hostname ASC , description ASC';
 
-if (isset($preferences['order_by']) && $preferences['order_by'] != '') {
-
+if (isset($preferences['order_by']) && trim($preferences['order_by']) != '') {
     $aOrder = explode(' ', $preferences['order_by']);
     if (in_array('last_state_change', $aOrder) || in_array('last_hard_state_change', $aOrder)) {
         if ($aOrder[1] == 'DESC') {
@@ -359,7 +358,7 @@ if (isset($preferences['order_by']) && $preferences['order_by'] != '') {
         $orderBy = $preferences['order_by'];
     }
 
-    if (isset($preferences['order_by2']) && $preferences['order_by2'] != '') {
+    if (isset($preferences['order_by2']) && trim($preferences['order_by2']) != '') {
         $aOrder = explode(' ', $preferences['order_by2']);
         $orderBy .= ', ' . $aOrder[0] . ' ' . $aOrder[1];
     }
