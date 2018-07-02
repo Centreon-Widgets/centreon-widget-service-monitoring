@@ -26,7 +26,6 @@ jQuery(function () {
         var top = event.clientY + 0;
         var contentHeight = popupVolante.height();
 
-        console.log(window.innerHeight, (top + contentHeight), (window.innerHeight - (top + contentHeight)));
         if ((window.innerHeight - (top + contentHeight)) < 25) {
             top = event.clientY - contentHeight;
         }
