@@ -262,18 +262,21 @@ if (isset($preferences['poller']) && $preferences['poller']) {
 }
 
 if (isset($preferences['hostgroup']) && $preferences['hostgroup']) {
-    $mainQueryParameters[] = [
-        'parameter' => ':hostgroup_hg_id',
-        'value' => $preferences['hostgroup'],
-        'type' => PDO::PARAM_INT
-    ];
-    $hostgroupHgIdCondition = <<<SQL
- s.host_id IN (
+    $tab = explode(',', $preferences['hostgroup']);
+    $labels = '';
+    foreach ($tab as $p) {
+        if ($labels != '') {
+            $labels .= ',';
+        }
+        $labels .= "'" . trim($p) . "'";
+    }
+    $query = CentreonUtils::conditionBuilder($query,
+      " s.host_id IN (
       SELECT host_host_id
-      FROM {$conf_centreon['db']}.hostgroup_relation
-      WHERE hostgroup_hg_id = :hostgroup_hg_id)
-SQL;
-    $query = CentreonUtils::conditionBuilder($query, $hostgroupHgIdCondition);
+      FROM ".$conf_centreon['db'].".hostgroup_relation as hgr
+      LEFT JOIN ".$conf_centreon['db'].".hostgroup as hg
+      ON hg.hg_id = hgr.hostgroup_hg_id
+      WHERE hg.hg_name IN (".$labels."))");
 }
 if (isset($preferences['servicegroup']) && $preferences['servicegroup']) {
     $queryHost = <<<SQL
