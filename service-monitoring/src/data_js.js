@@ -46,8 +46,8 @@ jQuery(function () {
     }
 
     jQuery(".selection").on('click', function() {
-        curId = jQuery(this).attr('id');
-        state = jQuery(this).prop('checked');
+        var curId = jQuery(this).attr('id');
+        var state = jQuery(this).prop('checked');
         if( state == true) {
             localStorage.setItem('w_sm_'+curId, '1');
         } else {
