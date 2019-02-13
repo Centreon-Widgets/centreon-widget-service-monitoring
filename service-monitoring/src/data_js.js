@@ -46,8 +46,8 @@ jQuery(function () {
     }
 
     jQuery(".selection").on('click', function() {
-        curId = jQuery(this).attr('id');
-        state = jQuery(this).prop('checked');
+        var curId = jQuery(this).attr('id');
+        var state = jQuery(this).prop('checked');
         /**
         key = w_sm_[ID]
         w = widget
