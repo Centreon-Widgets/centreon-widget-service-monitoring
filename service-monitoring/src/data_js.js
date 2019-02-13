@@ -46,18 +46,18 @@ jQuery(function () {
     }
 
     jQuery(".selection").on('click', function() {
-        var curId = jQuery(this).attr('id');
-        var state = jQuery(this).prop('checked');
+        curId = jQuery(this).attr('id');
+        state = jQuery(this).prop('checked');
         if( state == true) {
-            localStorage.setItem('w_sm_'+curId, '1');
+            localStorage.setItem('w_sm_' + curId, '1');
         } else {
-            localStorage.removeItem('w_sm_'+curId);
+            localStorage.removeItem('w_sm_' + curId);
         }
     });
 
     jQuery(".selection").each(function() {
         var curId = jQuery(this).attr('id');
-        if (localStorage.getItem('w_sm_'+curId)) {
+        if (localStorage.getItem('w_sm_' + curId)) {
             jQuery(this).prop('checked', true);
         }
     });
