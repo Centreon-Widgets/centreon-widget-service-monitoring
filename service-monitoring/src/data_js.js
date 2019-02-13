@@ -48,6 +48,11 @@ jQuery(function () {
     jQuery(".selection").on('click', function() {
         curId = jQuery(this).attr('id');
         state = jQuery(this).prop('checked');
+        /**
+        key = w_sm_[ID]
+        w = widget
+        sm = service monitoring
+       */
         if( state == true) {
             localStorage.setItem('w_sm_' + curId, '1');
         } else {
