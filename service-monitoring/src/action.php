@@ -103,7 +103,9 @@ try {
 
             /* Default ack options */
             $persistent_checked = '';
-            if (isset($centreon->optGen['monitoring_ack_persistent']) && $centreon->optGen['monitoring_ack_persistent']) {
+            if (isset($centreon->optGen['monitoring_ack_persistent'])
+                && $centreon->optGen['monitoring_ack_persistent']
+            ) {
                 $persistent_checked = 'checked';
             }
             $template->assign('persistent_checked', $persistent_checked);
@@ -127,7 +129,9 @@ try {
             $template->assign('process_service_checked', $process_service_checked);
 
             $force_active_checked = '';
-            if (isset($centreon->optGen['monitoring_ack_active_checks']) && $centreon->optGen['monitoring_ack_active_checks']) {
+            if (isset($centreon->optGen['monitoring_ack_active_checks'])
+                && $centreon->optGen['monitoring_ack_active_checks']
+            ) {
                 $force_active_checked = 'checked';
             }
             $template->assign('force_active_checked', $force_active_checked);
@@ -182,61 +186,61 @@ try {
         $isSvcCommand = false;
         switch ($cmd) {
             /* service: schedule check */
-            case 3 :
+            case 3:
                 $command = "SCHEDULE_SVC_CHECK;%s;" . time();
                 $isSvcCommand = true;
                 break;
             /* service: schedule forced check */
-            case 4 :
+            case 4:
                 $command = "SCHEDULE_FORCED_SVC_CHECK;%s;" . time();
                 $isSvcCommand = true;
                 break;
             /* service: remove ack */
-            case 71 :
+            case 71:
                 $command = "REMOVE_SVC_ACKNOWLEDGEMENT;%s";
                 $isSvcCommand = true;
                 break;
             /* service: enable notif */
-            case 80 :
+            case 80:
                 $command = "ENABLE_SVC_NOTIFICATIONS;%s";
                 $isSvcCommand = true;
                 break;
             /* service: enable notif */
-            case 81 :
+            case 81:
                 $command = "DISABLE_SVC_NOTIFICATIONS;%s";
                 $isSvcCommand = true;
                 break;
             /* service: enable check */
-            case 90 :
+            case 90:
                 $command = "ENABLE_SVC_CHECK;%s";
                 $isSvcCommand = true;
                 break;
             /* service: disable check */
-            case 91 :
+            case 91:
                 $command = "DISABLE_SVC_CHECK;%s";
                 $isSvcCommand = true;
                 break;
             /* host: remove ack */
-            case 73 :
+            case 73:
                 $command = "REMOVE_HOST_ACKNOWLEDGEMENT;%s";
                 break;
             /* host: enable notif */
-            case 82 :
+            case 82:
                 $command = "ENABLE_HOST_NOTIFICATIONS;%s";
                 break;
             /* host: disable notif */
-            case 83 :
+            case 83:
                 $command = "DISABLE_HOST_NOTIFICATIONS;%s";
                 break;
             /* host: enable check */
-            case 92 :
+            case 92:
                 $command = "ENABLE_HOST_CHECK;%s";
                 break;
             /* host: disable check */
-            case 93 :
+            case 93:
                 $command = "DISABLE_HOST_CHECK;%s";
                 break;
-            default :
+            default:
                 throw new Exception('Unknown command');
                 break;
         }
@@ -261,9 +265,11 @@ try {
                     } else {
                         $cmdParam = $hostname;
                     }
-                    $externalCmd->$externalCommandMethod(sprintf(
-                        $command,
-                        $cmdParam),
+                    $externalCmd->$externalCommandMethod(
+                        sprintf(
+                            $command,
+                            $cmdParam
+                        ),
                         $hostObj->getHostPollerId($hostId)
                     );
                 }
