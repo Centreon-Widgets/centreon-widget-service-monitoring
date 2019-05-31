@@ -140,7 +140,6 @@ try {
             $template->assign('submitLabel', _("Acknowledge"));
             $template->display('acknowledge.ihtml');
         } elseif ($cmd == 75 || $cmd == 74) {
-
             $hourStart = $centreon->CentreonGMT->getDate("H", time(), $gmt);
             $minuteStart = $centreon->CentreonGMT->getDate("i", time(), $gmt);
 
