@@ -56,6 +56,7 @@
     <preference label="Display Last Comment" name="display_last_comment" defaultValue="0" type="boolean"/>
     <preference label="Display Latency" name="display_latency" defaultValue="0" type="boolean"/>
     <preference label="Display Execution Time" name="display_execution_time" defaultValue="0" type="boolean"/>
+    <preference label="Display Macros (macros name separated by ',')" name="display_macros" defaultValue="" type="text"/>
     <preference label="Comment Length" name="comment_length" defaultValue="50" type="range" min="50" max="500" step="50"/>
     <preference label="Order By" name="order_by" defaultValue="" type="sort">
       <option value="hostname" label="Host Name"/>
