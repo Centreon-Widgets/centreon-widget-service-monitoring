@@ -25,6 +25,7 @@
       <option value="ack" label="Acknowledged"/>
       <option value="nack" label="Not Acknowleged"/>
     </preference>
+    <preference label="Acknowledge by me" name="acknowledgement_me" defaultValue="0" type="boolean"/>
     <preference label="Notification Filter" name="notification_filter" defaultValue="all" type="list">
       <option value="enabled" label="Notification Enabled"/>
       <option value="disabled" label="Notification Disabled"/>
