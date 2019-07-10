@@ -272,9 +272,12 @@ if (isset($preferences['acknowledgement_me']) && $preferences['acknowledgement_m
         'value' => $centreon->user->alias,
         'type' => PDO::PARAM_STR
     ];
-    $query = CentreonUtils::conditionBuilder($query, 
-        ' s.acknowledged = 1 AND s.host_id = ack1.host_id AND s.service_id = ack1.service_id AND ack1.author = :ack_author AND 
-          ack1.acknowledgement_id IN (SELECT MAX(acknowledgement_id) FROM acknowledgements ack2 WHERE ack2.host_id = s.host_id AND ack2.service_id = s.service_id GROUP BY ack2.host_id, ack2.service_id)');
+    $query = CentreonUtils::conditionBuilder(
+        $query, 
+        ' s.acknowledged = 1 AND s.host_id = ack1.host_id AND s.service_id = ack1.service_id AND ack1.author = :ack_author
+        AND ack1.acknowledgement_id IN (SELECT MAX(acknowledgement_id) FROM acknowledgements ack2 WHERE ack2.host_id = s.host_id
+        AND ack2.service_id = s.service_id GROUP BY ack2.host_id, ack2.service_id)'
+    );
 }
 
 if (isset($preferences['hostgroup']) && $preferences['hostgroup']) {
