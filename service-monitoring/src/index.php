@@ -111,8 +111,10 @@ if (isset($preferences['display_macros']) && $preferences['display_macros'] != '
         $values = explode(':', $value);
         if (count($values) == 2) {
             $macrosDisplay[] = array(
-                'header' => $values[0], 'macro_name' => $values[1], 
-                'num' => $i, 'column_name' => 'cv_macro_display' . $i . '_value'
+                'header' => $values[0],
+                'macro_name' => $values[1], 
+                'num' => $i, 
+                'column_name' => 'cv_macro_display' . $i . '_value'
             );
             $i++;
         }
@@ -166,8 +168,10 @@ $query .= ' FROM hosts h JOIN instances i ON h.instance_id=i.instance_id, servic
     'AND s.host_id = cv2.host_id AND cv2.name = \'CRITICALITY_ID\') ';
 
 foreach ($macrosDisplay as $macro) {
-    $query .= ' LEFT JOIN customvariables cv_macro_display' . $macro['num'] . ' ON (s.service_id = cv_macro_display' . $macro['num'] . '.service_id ' .
-             ' AND s.host_id = cv_macro_display' . $macro['num'] . '.host_id AND cv_macro_display' . $macro['num'] . '.name = :macro_display' . $macro['num'] . ') ';
+    $query .= ' LEFT JOIN customvariables cv_macro_display' . $macro['num'] . 
+        ' ON (s.service_id = cv_macro_display' . $macro['num'] . '.service_id AND ' .
+        ' s.host_id = cv_macro_display' . $macro['num'] . '.host_id AND ' . 
+        ' cv_macro_display' . $macro['num'] . '.name = :macro_display' . $macro['num'] . ') ';
     $mainQueryParameters[] = [
         'parameter' => ':macro_display' . $macro['num'],
         'value' => $macro['macro_name'],
