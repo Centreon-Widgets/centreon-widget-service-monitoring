@@ -309,16 +309,23 @@ if (isset($preferences['servicegroup']) && $preferences['servicegroup']) {
     }
     $servicegroupCondition = <<<SQL
 s.service_id IN (
+<<<<<<< HEAD
         SELECT DISTINCT service_id 
         FROM services_servicegroups 
         WHERE servicegroup_id IN ({$querySG})) 
+=======
+    SELECT DISTINCT service_id 
+    FROM services_servicegroups 
+    WHERE servicegroup_id IN ({$querySG})
+    ) 
+>>>>>>> add multiselect on criticality and servicegroup preference
 SQL;
     $query = CentreonUtils::conditionBuilder($query, $servicegroupCondition);
 }
-if (isset($preferences['display_severities']) &&
-    $preferences['display_severities'] &&
-    isset($preferences['criticality_filter']) &&
-    $preferences['criticality_filter'] != ''
+if (isset($preferences['display_severities'])
+    && $preferences['display_severities']
+    && isset($preferences['criticality_filter']) 
+    && $preferences['criticality_filter'] != ''
 ) {
     $tab = explode(',', $preferences['criticality_filter']);
     $labels = '';
@@ -332,7 +339,12 @@ if (isset($preferences['display_severities']) &&
 s.service_id IN (
     SELECT service_service_id 
     FROM {$conf_centreon['db']}.service_categories_relation
+<<<<<<< HEAD
     WHERE sc_id IN ({$labels}))
+=======
+    WHERE sc_id IN ({$labels})
+    )
+>>>>>>> add multiselect on criticality and servicegroup preference
 SQL;
     $query = CentreonUtils::conditionBuilder($query, $servicecategoriesIdCondition);
 }
