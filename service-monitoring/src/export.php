@@ -229,7 +229,7 @@ if (isset($preferences['state_type_filter']) && $preferences['state_type_filter'
 }
 if (isset($preferences['hostgroup']) && $preferences['hostgroup']) {
     $results = explode(',', $preferences['hostgroup']);
-    $queryHG ='';
+    $queryHG = '';
     foreach ($results as $result) {
         if ($queryHG != '') {
             $queryHG .= ', ';
