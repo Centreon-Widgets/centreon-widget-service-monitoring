@@ -294,76 +294,45 @@ if (isset($preferences['hostgroup']) && $preferences['hostgroup']) {
     );
 }
 if (isset($preferences['servicegroup']) && $preferences['servicegroup']) {
-    $resultHost = $dbb->prepare(
-        "SELECT DISTINCT h.host_id 
-        FROM servicegroups sg 
-        INNER JOIN services_servicegroups sgm ON sg.servicegroup_id = sgm.servicegroup_id 
-        INNER JOIN services s ON s.service_id = sgm.service_id
-        INNER JOIN hosts h ON sgm.host_id = h.host_id 
-        AND h.host_id = s.host_id 
-        WHERE sg.servicegroup_id = :servicegroup_id"
-    );
-    $resultHost->bindValue(':servicegroup_id', $preferences['servicegroup'], PDO::PARAM_INT);
-    $resultHost->execute();
-
-    $hosts = [];
-    while ($row = $resultHost->fetch()) {
-        $hosts[] = $row['host_id'];
+    $resultsSG = explode(',', $preferences['servicegroup']);
+    $querySG = '';
+    foreach ($resultsSG as $resultSG) {
+        if ($querySG != '') {
+            $querySG .= ', ';
+        }
+        $querySG .= ":id_" . $resultSG;
+        $mainQueryParameters[] = [
+            'parameter' => ':id_' . $resultSG,
+            'value' => (int)$resultSG,
+            'type' => PDO::PARAM_INT
+        ];
     }
-    $hostsList = implode(',', $hosts);
-    unset($hosts);
-
-    $mainQueryParameters[] = [
-        'parameter' => ':servicegroup_id',
-        'value' => $preferences['servicegroup'],
-        'type' => PDO::PARAM_INT
-    ];
     $query = CentreonUtils::conditionBuilder(
         $query,
         " s.service_id IN (
-            SELECT DISTINCT s.service_id 
-            FROM servicegroups sg, services_servicegroups sgm, services s, hosts h 
-            WHERE h.host_id = s.host_id 
-            AND s.host_id = sgm.host_id 
-            AND s.service_id = sgm.service_id
-            AND sg.servicegroup_id = sgm.servicegroup_id
-            AND sg.servicegroup_id = :servicegroup_id
-            AND h.host_id IN (" . $hostsList . ")
+            SELECT DISTINCT service_id 
+            FROM services_servicegroups 
+            WHERE servicegroup_id IN (" . $querySG . ")
         )"
     );
-    unset($hostsList);
 }
-if (isset($preferences['display_severities']) &&
-    $preferences['display_severities'] &&
-    isset($preferences['criticality_filter']) &&
-    $preferences['criticality_filter'] != ''
-) {
+if  (isset($preferences['criticality_filter']) && $preferences['criticality_filter'] != '') {
     $tab = explode(',', $preferences['criticality_filter']);
     $labels = '';
     foreach ($tab as $p) {
         if ($labels != '') {
             $labels .= ',';
         }
-        $labels .= "'" . trim($p) . "'";
+        $labels .= '\'' . trim($p) . '\'';
     }
-    $query2 = "SELECT sc_id FROM service_categories WHERE sc_name IN (" . $labels . ")";
-    $RES = $db->query($query2);
-    $idC = '';
-    while ($d1 = $RES->fetch()) {
-        if ($idC != '') {
-            $idC .= ',';
-        }
-        $idC .= $d1['sc_id'];
-    }
-    $query .= " AND cv2.`value` IN (" . $idC . ") ";
-}
-if (!$centreon->user->admin) {
-    $pearDB = $db;
-    $aclObj = new CentreonACL($centreon->user->user_id, $centreon->user->admin);
-    $groupList = $aclObj->getAccessGroupsString();
-    $query .= " AND h.host_id = acl.host_id
-    AND acl.service_id = s.service_id
-    AND acl.group_id IN (" . $groupList . ")";
+    $query = CentreonUtils::conditionBuilder(
+        $query,
+        " s.service_id IN (
+            SELECT DISTINCT service_service_id 
+            FROM " . $conf_centreon['db'] . ".service_categories_relation
+            WHERE sc_id IN (" . $labels . ") 
+        )"
+    );
 }
 if (isset($preferences['output_search']) && $preferences['output_search'] != "") {
     $tab = explode(' ', $preferences['output_search']);
