@@ -323,16 +323,20 @@ if  (!empty($preferences['criticality_filter'])) {
         if ($labels != '') {
             $labels .= ',';
         }
-        $labels .= '\'' . trim($p) . '\'';
+        $labels .= ":id_". $p;
+        $mainQueryParameters[] = [
+            'parameter' => ':id_' . $p,
+            'value' => (int)$p,
+            'type' => PDO::PARAM_INT
+        ];
     }
-    $query = CentreonUtils::conditionBuilder(
-        $query,
-        " s.service_id IN (
-            SELECT DISTINCT service_service_id 
-            FROM " . $conf_centreon['db'] . ".service_categories_relation
-            WHERE sc_id IN (" . $labels . ") 
-        )"
-    );
+    $SeverityIdCondition = <<<SQL
+s.service_id IN (
+    SELECT DISTINCT service_service_id 
+    FROM {$conf_centreon['db']}.service_categories_relation
+    WHERE sc_id IN ({$labels}))
+SQL;
+    $query = CentreonUtils::conditionBuilder($query, $SeverityIdCondition);
 }
 if (isset($preferences['output_search']) && $preferences['output_search'] != "") {
     $tab = explode(' ', $preferences['output_search']);
