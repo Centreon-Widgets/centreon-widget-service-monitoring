@@ -4,7 +4,13 @@
             {if $preferences.more_views}
                 <td class="ListColHeaderPicker"><input type='checkbox' id='selection_0;0' class='checkall selection'/></td>
             {/if}
-            {if $preferences.display_severities}
+            {assign var='isSeverity' value=0}
+            {foreach item=elem from=$data}
+                {if $elem.criticality_id}
+                    {assign var='isSeverity' value=1}
+                {/if}
+            {/foreach}
+            {if $isSeverity}
                 <td class="ListColHeaderCenter" style="white-space: nowrap; width: 17px;" name='Severities'>S</td>
             {/if}
             {if $preferences.display_host_name || $preferences.display_host_alias}
@@ -45,7 +51,7 @@
                 {if $preferences.more_views}
                     <td class='ListColLeft'><input class='selection' id='selection_{$elem.host_id};{$elem.service_id}' type='checkbox'/></td>
                 {/if}
-                {if $preferences.display_severities}
+                {if $isSeverity}
                     <td class=''>{$elem.criticality_id}</td>
                 {/if}
                 {if $preferences.display_host_name || $preferences.display_host_alias}
