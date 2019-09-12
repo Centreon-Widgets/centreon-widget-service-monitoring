@@ -273,7 +273,7 @@ if (isset($preferences['servicegroup']) && $preferences['servicegroup']) {
         )"
     );
 }
-if  (!empty($preferences['criticality_filter'])) {
+if  (!empty($preferences['display_severities']) && !empty($preferences['criticality_filter'])) {
     $tab = explode(',', $preferences['criticality_filter']);
     $labels = '';
     foreach ($tab as $p) {
@@ -287,13 +287,12 @@ if  (!empty($preferences['criticality_filter'])) {
             'type' => PDO::PARAM_INT
         ];
     }
-    $SeverityIdCondition = <<<SQL
-s.service_id IN (
-    SELECT DISTINCT service_service_id 
-    FROM {$conf_centreon['db']}.service_categories_relation
-    WHERE sc_id IN ({$labels}))
-SQL;
-    $query = CentreonUtils::conditionBuilder($query, $SeverityIdCondition);
+    $severityIdCondition = 's.service_id IN ( '
+        . 'SELECT DISTINCT service_service_id '
+        . 'FROM ' . $conf_centreon['db'] . '.service_categories_relation '
+        . 'WHERE sc_id IN (' . $labels . ') '
+        . ')';
+    $query = CentreonUtils::conditionBuilder($query, $severityIdCondition);
 }
 if (isset($preferences['output_search']) && $preferences['output_search'] != "") {
     $tab = explode(" ", $preferences['output_search']);
