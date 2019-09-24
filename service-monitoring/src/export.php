@@ -267,32 +267,27 @@ if (isset($preferences['servicegroup']) && $preferences['servicegroup']) {
     $query = CentreonUtils::conditionBuilder(
         $query,
         " s.service_id IN (
-            SELECT DISTINCT service_id 
-            FROM services_servicegroups 
+            SELECT DISTINCT service_id
+            FROM services_servicegroups
             WHERE servicegroup_id IN (" . $querySG . ")
         )"
     );
 }
-if  (!empty($preferences['display_severities']) && !empty($preferences['criticality_filter'])) {
+if  (!empty($preferences['criticality_filter'])) {
     $tab = explode(',', $preferences['criticality_filter']);
-    $labels = '';
+    $labels = [];
     foreach ($tab as $p) {
-        if ($labels != '') {
-            $labels .= ',';
-        }
-        $labels .= ":id_" . $p;
+        $labels[] = ":id_". $p;
         $mainQueryParameters[] = [
             'parameter' => ':id_' . $p,
-            'value' => (int)$p,
+            'value' => (int) $p,
             'type' => PDO::PARAM_INT
         ];
     }
-    $severityIdCondition = 's.service_id IN ( '
-        . 'SELECT DISTINCT service_service_id '
-        . 'FROM ' . $conf_centreon['db'] . '.service_categories_relation '
-        . 'WHERE sc_id IN (' . $labels . ') '
-        . ')';
-    $query = CentreonUtils::conditionBuilder($query, $severityIdCondition);
+    $query = CentreonUtils::conditionBuilder(
+        $query,
+        'cv2.value IN (' . implode(',', $labels) . ')'
+    );
 }
 if (isset($preferences['output_search']) && $preferences['output_search'] != "") {
     $tab = explode(" ", $preferences['output_search']);

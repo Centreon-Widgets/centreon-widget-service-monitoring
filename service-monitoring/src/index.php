@@ -144,12 +144,12 @@ $query = 'SELECT SQL_CALC_FOUND_ROWS h.host_id,
     FROM hosts h JOIN instances i ON h.instance_id=i.instance_id, services s
     LEFT JOIN customvariables cv ON (
         s.service_id = cv.service_id
-        AND s.host_id = cv.host_id 
+        AND s.host_id = cv.host_id
         AND cv.name = \'CRITICALITY_LEVEL\'
     )
     LEFT JOIN customvariables cv2 ON (
         s.service_id = cv2.service_id
-        AND s.host_id = cv2.host_id 
+        AND s.host_id = cv2.host_id
         AND cv2.name = \'CRITICALITY_ID\'
     ) ';
 
@@ -310,33 +310,27 @@ if (isset($preferences['servicegroup']) && $preferences['servicegroup']) {
     $query = CentreonUtils::conditionBuilder(
         $query,
         " s.service_id IN (
-            SELECT DISTINCT service_id 
-            FROM services_servicegroups 
+            SELECT DISTINCT service_id
+            FROM services_servicegroups
             WHERE servicegroup_id IN (" . $querySG . ")
         )"
     );
 }
 if  (!empty($preferences['criticality_filter'])) {
     $tab = explode(',', $preferences['criticality_filter']);
-    $labels = '';
+    $labels = [];
     foreach ($tab as $p) {
-        if ($labels != '') {
-            $labels .= ',';
-        }
-        $labels .= ":id_". $p;
+        $labels[] = ":id_". $p;
         $mainQueryParameters[] = [
             'parameter' => ':id_' . $p,
-            'value' => (int)$p,
+            'value' => (int) $p,
             'type' => PDO::PARAM_INT
         ];
     }
-    $SeverityIdCondition = <<<SQL
-s.service_id IN (
-    SELECT DISTINCT service_service_id 
-    FROM {$conf_centreon['db']}.service_categories_relation
-    WHERE sc_id IN ({$labels}))
-SQL;
-    $query = CentreonUtils::conditionBuilder($query, $SeverityIdCondition);
+    $query = CentreonUtils::conditionBuilder(
+        $query,
+        'cv2.value IN (' . implode(',', $labels) . ')'
+    );
 }
 if (isset($preferences['output_search']) && $preferences['output_search'] != "") {
     $tab = explode(' ', $preferences['output_search']);
