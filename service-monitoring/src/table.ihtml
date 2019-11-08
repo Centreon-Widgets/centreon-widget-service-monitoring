@@ -7,6 +7,9 @@
             {if $preferences.display_severities}
                 <td class="ListColHeaderCenter" style="white-space: nowrap; width: 17px;" name='Severities'>S</td>
             {/if}
+            {foreach item=macro from=$macrosDisplay}
+                <td class='ListColHeaderCenter' name='{$macro.header}'>{$macro.header}</td>
+            {/foreach}
             {if $preferences.display_host_name || $preferences.display_host_alias}
                 {if $preferences.display_host_name && $preferences.display_host_alias}
                     {assign var='host_label' value="Host Name - Host Alias"}
@@ -48,6 +51,9 @@
                 {if $preferences.display_severities}
                     <td class=''>{$elem.criticality_id}</td>
                 {/if}
+                {foreach item=macro from=$macrosDisplay}
+                    <td class='ListColCenter' style='white-space:nowrap;'>{$elem[$macro.column_name]}</td>
+                {/foreach}
                 {if $preferences.display_host_name || $preferences.display_host_alias}
                     {if $preferences.display_host_name && $preferences.display_host_alias}
                         {assign var='host_name' value=$elem.hostname|cat:" - "|cat:$elem.hostalias}

@@ -105,6 +105,24 @@ $stateLabels = [
 $aStateType = ['1' => 'H', '0' => 'S'];
 $mainQueryParameters = [];
 
+$macrosDisplay = array();
+if (isset($preferences['display_macros']) && $preferences['display_macros'] != '') {
+    $tmp = explode(',', $preferences['display_macros']);
+    $i = 0;
+    foreach ($tmp as $value) {
+        $values = explode(':', $value);
+        if (count($values) == 2) {
+            $macrosDisplay[] = array(
+                'header' => $values[0],
+                'macro_name' => $values[1], 
+                'num' => $i, 
+                'column_name' => 'cv_macro_display' . $i . '_value'
+            );
+            $i++;
+        }
+    }
+}
+
 // Build Query
 $query = 'SELECT SQL_CALC_FOUND_ROWS h.host_id,
         h.name as hostname,
@@ -141,17 +159,27 @@ $query = 'SELECT SQL_CALC_FOUND_ROWS h.host_id,
         cv2.value AS criticality_id,
         cv.value AS criticality_level,
         h.icon_image
-    FROM hosts h JOIN instances i ON h.instance_id=i.instance_id, services s
-    LEFT JOIN customvariables cv ON (
-        s.service_id = cv.service_id
-        AND s.host_id = cv.host_id
-        AND cv.name = \'CRITICALITY_LEVEL\'
-    )
-    LEFT JOIN customvariables cv2 ON (
-        s.service_id = cv2.service_id
-        AND s.host_id = cv2.host_id
-        AND cv2.name = \'CRITICALITY_ID\'
-    ) ';
+';
+foreach ($macrosDisplay as $macro) {
+    $query .= ', cv_macro_display' . $macro['num'] . '.value AS ' . $macro['column_name'];
+}
+$query .= ' FROM hosts h JOIN instances i ON h.instance_id=i.instance_id, services s ' . 
+    'LEFT JOIN customvariables cv ON (s.service_id = cv.service_id ' .
+    'AND s.host_id = cv.host_id AND cv.name = \'CRITICALITY_LEVEL\') ' .
+    'LEFT JOIN customvariables cv2 ON (s.service_id = cv2.service_id ' .
+    'AND s.host_id = cv2.host_id AND cv2.name = \'CRITICALITY_ID\') ';
+
+foreach ($macrosDisplay as $macro) {
+    $query .= ' LEFT JOIN customvariables cv_macro_display' . $macro['num'] . 
+        ' ON (s.service_id = cv_macro_display' . $macro['num'] . '.service_id AND ' .
+        ' s.host_id = cv_macro_display' . $macro['num'] . '.host_id AND ' . 
+        ' cv_macro_display' . $macro['num'] . '.name = :macro_display' . $macro['num'] . ') ';
+    $mainQueryParameters[] = [
+        'parameter' => ':macro_display' . $macro['num'],
+        'value' => $macro['macro_name'],
+        'type' => PDO::PARAM_STR
+    ];
+}
 
 if (!$centreon->user->admin) {
     $query .= ' , centreon_acl acl ';
@@ -591,5 +619,6 @@ $template->assign('StateSColors', $stateSColors);
 $template->assign('centreon_web_path', $centreon->optGen['oreon_web_path']);
 $template->assign('preferences', $preferences);
 $template->assign('data', $data);
+$template->assign('macrosDisplay', $macrosDisplay);
 $template->assign('broker', 'broker');
 $template->display('table.ihtml');
