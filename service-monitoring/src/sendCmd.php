@@ -58,8 +58,9 @@ try {
     if (CentreonSession::checkSession(session_id(), $db) == 0) {
         throw new Exception('Invalid session');
     }
-    $type = $_POST['cmdType'];
-    $cmd = $_POST['cmd'];
+    $type = filter_input(INPUT_POST, 'cmdType', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+    $cmd = filter_input(INPUT_POST, 'cmd', FILTER_VALIDATE_INT, ['options' => ['default' => 0]]);
+
     $centreon = $_SESSION['centreon'];
     $selections = explode(',', $_POST['selection']);
     $oreon = $centreon;
@@ -134,13 +135,13 @@ try {
             if (count($tmp) != 2) {
                 throw new Exception('Incorrect id format');
             }
-            $hostId = $tmp[0];
-            $svcId = $tmp[1];
-            if ($hostId != 0 && $svcId != 0) {
+            $hostId = filter_var($tmp[0], FILTER_VALIDATE_INT) ?: 0;
+            $svcId = filter_var($tmp[1], FILTER_VALIDATE_INT) ?: 0;
+            if ($hostId !== 0 && $svcId !== 0) {
                 $hostname = $hostObj->getHostName($hostId);
                 $svcDesc = $svcObj->getServiceDesc($svcId);
                 $pollerId = $hostObj->getHostPollerId($hostId);
-                if ($cmd == 70 || $cmd == 74) {
+                if ($cmd === 70 || $cmd === 74) {
                     $externalCmd->$externalCommandMethod(sprintf($commandSvc, $hostname, $svcDesc), $pollerId);
                     if (isset($forceCmdSvc)) {
                         $externalCmd->$externalCommandMethod(sprintf($forceCmdSvc, $hostname, $svcDesc), $pollerId);
