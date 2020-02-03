@@ -1,6 +1,6 @@
 <?php
-/**
- * Copyright 2005-2019 Centreon
+/*
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -32,6 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
+
 require_once "../../require.php";
 require_once $centreon_path . 'www/class/centreon.class.php';
 require_once $centreon_path . 'www/class/centreonSession.class.php';
