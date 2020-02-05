@@ -68,13 +68,13 @@ try {
 
     $hostObj = new CentreonHost($db);
     $svcObj = new CentreonService($db);
-    $command = "";
-    $author = $_POST['author'];
-    $comment = "";
+    $command = '';
+    $author = filter_input(INPUT_POST, 'author', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
+    $comment = '';
     if (isset($_POST['comment'])) {
-        $comment = $_POST['comment'];
+        $comment = filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_STRING, ['options' => ['default' => '']]);
     }
-    if ($type == 'ack') {
+    if ($type === 'ack') {
         $persistent = 0;
         $sticky = 0;
         $notify = 0;
@@ -93,7 +93,7 @@ try {
             $forceCmd = "SCHEDULE_FORCED_HOST_CHECK;%s;".time();
             $forceCmdSvc = "SCHEDULE_FORCED_SVC_CHECK;%s;%s;".time();
         }
-    } elseif ($type == 'downtime') {
+    } elseif ($type === 'downtime') {
         $fixed = 0;
         if (isset($_POST['fixed'])) {
             $fixed = 1;
@@ -125,7 +125,7 @@ try {
     } else {
         throw new Exception('Unknown command');
     }
-    if ($command != "") {
+    if ($command !== '') {
         $externalCommandMethod = 'set_process_command';
         if (method_exists($externalCmd, 'setProcessCommand')) {
             $externalCommandMethod = 'setProcessCommand';
