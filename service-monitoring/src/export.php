@@ -385,7 +385,9 @@ while ($row = $res->fetch()) {
     );
 }
 
-$autoRefresh = filter_var($preferences['refresh_interval'], FILTER_VALIDATE_INT) ?: 5;
+$autoRefresh = (isset($preferences['refresh_interval']) && (int)$preferences['refresh_interval'] > 0)
+    ? (int)$preferences['refresh_interval']
+    : 30;
 $template->assign('widgetId', $widgetId);
 $template->assign('preferences', $preferences);
 $template->assign('data', $data);

@@ -50,7 +50,9 @@ try {
     $db = $dependencyInjector['configuration_db'];
     $widgetObj = new CentreonWidget($centreon, $db);
     $preferences = $widgetObj->getWidgetPreferences($widgetId);
-    $autoRefresh = filter_var($preferences['refresh_interval'], FILTER_VALIDATE_INT) ?: 5;
+    $autoRefresh = (isset($preferences['refresh_interval']) && (int)$preferences['refresh_interval'] > 0)
+        ? (int)$preferences['refresh_interval']
+        : 30;
 } catch (Exception $e) {
     echo $e->getMessage() . "<br/>";
     exit;

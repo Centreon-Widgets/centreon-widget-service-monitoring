@@ -271,9 +271,9 @@ try {
                 if (count($tmp) != 2) {
                     throw new Exception('Incorrect id format');
                 }
-                $hostId = $tmp[0];
-                $svcId = $tmp[1];
-                if ($hostId != 0 && $svcId != 0) {
+                $hostId = filter_var($tmp[0], FILTER_VALIDATE_INT) ?: 0;
+                $svcId = filter_var($tmp[1], FILTER_VALIDATE_INT) ?: 0;
+                if ($hostId !== 0 && $svcId !== 0) {
                     $hostname = $hostObj->getHostName($hostId);
                     $svcDesc = $svcObj->getServiceDesc($svcId);
                     if ($isSvcCommand === true) {
