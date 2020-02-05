@@ -3,9 +3,7 @@
   <author>Centreon</author>
   <email>contact@centreon.com</email>
   <website>http://www.centreon.com</website>
-  <description>This interactive service event console widget displays the services status and allows to act on them
-    (acknowledge, add downtime, etc.). Multiple parameters allow to select which services to display (based on their
-    name, hostgroup, status, etc.) or which columns (name, alias, status, duration, output, etc.).</description>
+  <description>This interactive service event console widget displays the services status and allows to act on them (acknowledge, add downtime, etc.). Multiple parameters allow to select which services to display (based on their name, hostgroup, status, etc.) or which columns (name, alias, status, duration, output, etc.).</description>
   <version>19.04.3</version>
   <keywords>centreon, widget, service, monitoring</keywords>
   <screenshot></screenshot>
