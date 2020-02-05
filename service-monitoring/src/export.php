@@ -47,7 +47,6 @@ require_once $centreon_path . 'www/class/centreonUtils.class.php';
 require_once $centreon_path . 'www/class/centreonACL.class.php';
 require_once $centreon_path . 'www/class/centreonHost.class.php';
 require_once $centreon_path . 'www/class/centreonService.class.php';
-
 require_once $centreon_path . 'www/class/centreonMedia.class.php';
 require_once $centreon_path . 'www/class/centreonCriticality.class.php';
 
@@ -72,63 +71,66 @@ $criticality = new CentreonCriticality($db);
 $media = new CentreonMedia($db);
 
 $centreon = $_SESSION['centreon'];
-$widgetId = $_REQUEST['widgetId'];
+$widgetId = (int)$_REQUEST['widgetId'];
 
 $dbb = new CentreonDB("centstorage");
 $widgetObj = new CentreonWidget($centreon, $db);
 $preferences = $widgetObj->getWidgetPreferences($widgetId);
 
 $aStateType = array("1" => "H", "0" => "S");
-$stateLabels = array(0 => "Ok",
-                     1 => "Warning",
-                     2 => "Critical",
-                     3 => "Unknown",
-                     4 => "Pending");
+$stateLabels = array(
+    0 => "Ok",
+    1 => "Warning",
+    2 => "Critical",
+    3 => "Unknown",
+    4 => "Pending"
+);
 // Build Query
 $query = "SELECT SQL_CALC_FOUND_ROWS h.host_id,
-		h.name as hostname,
-		h.alias as hostalias,
+    h.name as hostname,
+    h.alias as hostalias,
     s.latency,
     s.execution_time,
-		h.state as h_state,
-		s.service_id,
-		s.description,
-		s.state as s_state,
+    h.state as h_state,
+    s.service_id,
+    s.description,
+    s.state as s_state,
     h.state_type as state_type,
-		s.last_hard_state,
-		s.output,
-		s.scheduled_downtime_depth as s_scheduled_downtime_depth,
-		s.acknowledged as s_acknowledged,
-		s.notify as s_notify,
-		s.active_checks as s_active_checks,
-		s.passive_checks as s_passive_checks,
-		h.scheduled_downtime_depth as h_scheduled_downtime_depth,
-		h.acknowledged as h_acknowledged,
-		h.notify as h_notify,
-		h.active_checks as h_active_checks,
-		h.passive_checks as h_passive_checks,
-		s.last_check,
-		s.last_state_change,
-		s.last_hard_state_change,
-		s.check_attempt,
-		s.max_check_attempts,
-		h.action_url as h_action_url,
-		h.notes_url as h_notes_url,
-		s.action_url as s_action_url,
-		s.notes_url as s_notes_url, 
-		cv2.value AS criticality_id,
-		cv.value AS criticality_level
-";
-$query .= " FROM hosts h, services s ";
-$query .= " LEFT JOIN customvariables cv ON (s.service_id = cv.service_id AND s.host_id = cv.host_id AND cv.name = 'CRITICALITY_LEVEL') ";
-$query .= " LEFT JOIN customvariables cv2 ON (s.service_id = cv2.service_id AND s.host_id = cv2.host_id AND cv2.name = 'CRITICALITY_ID') ";
+    s.last_hard_state,
+    s.output,
+    s.scheduled_downtime_depth as s_scheduled_downtime_depth,
+    s.acknowledged as s_acknowledged,
+    s.notify as s_notify,
+    s.active_checks as s_active_checks,
+    s.passive_checks as s_passive_checks,
+    h.scheduled_downtime_depth as h_scheduled_downtime_depth,
+    h.acknowledged as h_acknowledged,
+    h.notify as h_notify,
+    h.active_checks as h_active_checks,
+    h.passive_checks as h_passive_checks,
+    s.last_check,
+    s.last_state_change,
+    s.last_hard_state_change,
+    s.check_attempt,
+    s.max_check_attempts,
+    h.action_url as h_action_url,
+    h.notes_url as h_notes_url,
+    s.action_url as s_action_url,
+    s.notes_url as s_notes_url,
+    cv2.value AS criticality_id,
+    cv.value AS criticality_level
+    FROM hosts h, services s
+    LEFT JOIN customvariables cv
+        ON (s.service_id = cv.service_id AND s.host_id = cv.host_id AND cv.name = 'CRITICALITY_LEVEL')
+    LEFT JOIN customvariables cv2
+        ON (s.service_id = cv2.service_id AND s.host_id = cv2.host_id AND cv2.name = 'CRITICALITY_ID') ";
 if (!$centreon->user->admin) {
     $query .= " , centreon_acl acl ";
 }
-$query .= " WHERE s.host_id = h.host_id ";
-$query .= " AND h.name NOT LIKE '_Module_%' ";
-$query .= " AND s.enabled = 1 ";
-$query .= " AND h.enabled = 1 ";
+$query .= " WHERE s.host_id = h.host_id
+    AND h.name NOT LIKE '_Module_%'
+    AND s.enabled = 1
+    AND h.enabled = 1 ";
 if (isset($preferences['host_name_search']) && $preferences['host_name_search'] != "") {
     $tab = split(" ", $preferences['host_name_search']);
     $op = $tab[0];
@@ -136,7 +138,10 @@ if (isset($preferences['host_name_search']) && $preferences['host_name_search'] 
         $search = $tab[1];
     }
     if ($op && isset($search) && $search != "") {
-        $query = CentreonUtils::conditionBuilder($query, "h.name ".CentreonUtils::operandToMysqlFormat($op)." '".$dbb->escape($search)."' ");
+        $query = CentreonUtils::conditionBuilder(
+            $query,
+            "h.name " . CentreonUtils::operandToMysqlFormat($op) . " '" . $dbb->escape($search) . "' "
+        );
     }
 }
 if (isset($preferences['service_description_search']) && $preferences['service_description_search'] != "") {
@@ -146,7 +151,10 @@ if (isset($preferences['service_description_search']) && $preferences['service_d
         $search = $tab[1];
     }
     if ($op && isset($search) && $search != "") {
-        $query = CentreonUtils::conditionBuilder($query, "s.description ".CentreonUtils::operandToMysqlFormat($op)." '".$dbb->escape($search)."' ");
+        $query = CentreonUtils::conditionBuilder(
+            $query,
+            "s.description " . CentreonUtils::operandToMysqlFormat($op) . " '" . $dbb->escape($search) . "' "
+        );
     }
 }
 $stateTab = array();
@@ -178,7 +186,10 @@ if (isset($preferences['acknowledgement_filter']) && $preferences['acknowledgeme
     if ($preferences['acknowledgement_filter'] == "ack") {
         $query = CentreonUtils::conditionBuilder($query, " s.acknowledged = 1");
     } elseif ($preferences['acknowledgement_filter'] == "nack") {
-        $query = CentreonUtils::conditionBuilder($query, " s.acknowledged = 0 AND h.acknowledged = 0 AND h.scheduled_downtime_depth = 0 ");
+        $query = CentreonUtils::conditionBuilder(
+            $query,
+            " s.acknowledged = 0 AND h.acknowledged = 0 AND h.scheduled_downtime_depth = 0 "
+        );
     }
 }
 if (isset($preferences['notification_filter']) && $preferences['notification_filter']) {
@@ -256,7 +267,10 @@ if (isset($preferences['output_search']) && $preferences['output_search'] != "")
         $search = $tab[1];
     }
     if ($op && isset($search) && $search != "") {
-        $query = CentreonUtils::conditionBuilder($query, "s.output ".CentreonUtils::operandToMysqlFormat($op)." '".$dbb->escape($search)."' ");
+        $query = CentreonUtils::conditionBuilder(
+            $query,
+            "s.output " . CentreonUtils::operandToMysqlFormat($op) . " '" . $dbb->escape($search) . "' "
+        );
     }
 }
 $orderby = "hostname ASC , description ASC";
@@ -313,7 +327,9 @@ while ($row = $res->fetchRow()) {
     );
 }
 
-$autoRefresh = $preferences['refresh_interval'];
+$autoRefresh = (isset($preferences['refresh_interval']) && (int)$preferences['refresh_interval'] > 0)
+    ? (int)$preferences['refresh_interval']
+    : 30;
 $template->assign('widgetId', $widgetId);
 $template->assign('preferences', $preferences);
 $template->assign('data', $data);

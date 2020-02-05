@@ -56,8 +56,8 @@ try {
     }
     $centreon = $_SESSION['centreon'];
     $oreon = $centreon;
-    $cmd = $_REQUEST['cmd'];
-    $wId = $_REQUEST['wid'];
+    $cmd = (int)$_REQUEST['cmd'];
+    $wId = (int)$_REQUEST['wid'];
     $selections = explode(",", $_REQUEST['selection']);
     $externalCmd = new CentreonExternalCommand($centreon);
 
@@ -248,9 +248,9 @@ try {
                 if (count($tmp) != 2) {
                     throw new Exception('Incorrect id format');
                 }
-                $hostId = $tmp[0];
-                $svcId = $tmp[1];
-                if ($hostId != 0 && $svcId != 0) {
+                $hostId = (int)$tmp[0];
+                $svcId = (int)$tmp[1];
+                if ($hostId !== 0 && $svcId !== 0) {
                     $hostname = $hostObj->getHostName($hostId);
                     $svcDesc = $svcObj->getServiceDesc($svcId);
                     if ($isSvcCommand === true) {

@@ -54,7 +54,7 @@ $template = new Smarty();
 $template = initSmartyTplForPopup($path, $template, "./", $centreon_path);
 
 $centreon = $_SESSION['centreon'];
-$widgetId = $_POST['widgetId'];
+$widgetId = (int)$_POST['widgetId'];
 $db = new CentreonDB();
 $widgetObj = new CentreonWidget($centreon, $db);
 $preferences = $widgetObj->getWidgetPreferences($widgetId);
@@ -107,7 +107,7 @@ if ($canDoAction || $centreon->user->access->checkAction("host_checks")) {
     $actions .= "<option value='93'>"._("Host: Disable Host Check")."</option>";
 }
 
-$template->assign("widgetId", $_POST['widgetId']);
+$template->assign("widgetId", $widgetId);
 $template->assign("actions", $actions);
 $template->display('toolbar.ihtml');
 

@@ -54,8 +54,8 @@ try {
     if (CentreonSession::checkSession(session_id(), $db) == 0) {
         throw new Exception('Invalid session');
     }
-    $type = $_POST['cmdType'];
-    $cmd = $_POST['cmd'];
+    $type = CentreonUtils::escapeSecure($_POST['cmdType']);
+    $cmd = (int)$_POST['cmd'];
     $centreon = $_SESSION['centreon'];
     $selections = explode(',', $_POST['selection']);
     $oreon = $centreon;
@@ -64,10 +64,10 @@ try {
     $hostObj = new CentreonHost($db);
     $svcObj = new CentreonService($db);
     $command = "";
-    $author = $_POST['author'];
+    $author = CentreonUtils::escapeSecure($_POST['author']);
     $comment = "";
     if (isset($_POST['comment'])) {
-        $comment = $_POST['comment'];
+        $comment = CentreonUtils::escapeSecure($_POST['comment']);
     }
     if ($type == 'ack') {
         $persistent = 0;
@@ -130,13 +130,13 @@ try {
             if (count($tmp) != 2) {
                 throw new Exception('Incorrect id format');
             }
-            $hostId = $tmp[0];
-            $svcId = $tmp[1];
-            if ($hostId != 0 && $svcId != 0) {
+            $hostId = (int)$tmp[0];
+            $svcId = (int)$tmp[1];
+            if ($hostId !== 0 && $svcId !== 0) {
                 $hostname = $hostObj->getHostName($hostId);
                 $svcDesc = $svcObj->getServiceDesc($svcId);
                 $pollerId = $hostObj->getHostPollerId($hostId);
-                if ($cmd == 70 || $cmd == 74) {
+                if ($cmd === 70 || $cmd === 74) {
                     $externalCmd->$externalCommandMethod(sprintf($commandSvc, $hostname, $svcDesc), $pollerId);
                     if (isset($forceCmdSvc)) {
                         $externalCmd->$externalCommandMethod(sprintf($forceCmdSvc, $hostname, $svcDesc), $pollerId);
