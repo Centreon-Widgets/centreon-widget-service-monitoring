@@ -303,7 +303,9 @@ try {
 
         //initializing datepicker and timepicker
         jQuery(".timepicker").each(function () {
-                $(this).val(moment().tz(localStorage.getItem('realTimezone') ? localStorage.getItem('realTimezone') : moment.tz.guess()).format("HH:mm"));
+		if (! $(this).val()) {
+                	$(this).val(moment().tz(localStorage.getItem('realTimezone') ? localStorage.getItem('realTimezone') : moment.tz.guess()).format("HH:mm"));
+		}
         });
         jQuery("#start_time, #end_time").timepicker();
         initDatepicker();
