@@ -172,6 +172,10 @@ try {
 
             $template->assign('titleLabel', $title);
             $template->assign('submitLabel', _("Set Downtime"));
+            $template->assign('secondsLabel', _("seconds"));
+            $template->assign('minutesLabel', _("minutes"));
+            $template->assign('hoursLabel', _("hours"));
+            $template->assign('daysLabel', _("days"));
             $template->assign('defaultDuration', $defaultDuration);
             $template->assign($defaultScale . 'DefaultScale', 'selected');
             $template->display('downtime.ihtml');
