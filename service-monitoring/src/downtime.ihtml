@@ -5,7 +5,6 @@
 				<h3>{$titleLabel}</h3>
 			</td>
 		</tr>
-
 		<tr>
 			<td class="FormRowField">{$startLabel}<span style='color: red;'> *</span></td>
 			<td class="FormRowValue">
@@ -14,7 +13,6 @@
 				<input type='hidden' class='alternativeDate' id='altDateStart' size='10' name="alternativeDateStart" />
 			</td>
 		</tr>
-
 		<tr>
 			<td class="FormRowField">{$endLabel}<span style='color: red;'> *</span></td>
 			<td class="FormRowValue">
@@ -23,27 +21,24 @@
 				<input type='hidden' class='alternativeDate' id='altDateEnd' size='10' name="alternativeDateEnd" />
 			</td>
 		</tr>
-
 		<tr>
 			<td class="FormRowField">{$durationLabel}</td>
 			<td class="FormRowValue">
 				<input type='text' id='duration' name='duration' width='30' value='{$defaultDuration}' />
 				<select id="duration_scale" name="duration_scale">
-					<option value="s" {$sDefaultScale}>{$secondsLabel}</option>
-					<option value="m" {$mDefaultScale}>{$minutesLabel}</option>
-					<option value="h" {$hDefaultScale}>{$hoursLabel}</option>
-					<option value="d" {$dDefaultScale}>{$daysLabel}</option>
+					<option value="s" {$sDefaultScale}>{$sDurationLabel}</option>
+					<option value="m" {$mDefaultScale}>{$mDurationLabel}</option>
+					<option value="h" {$hDefaultScale}>{$hDurationLabel}</option>
+					<option value="d" {$dDefaultScale}>{$dDurationLabel}</option>
 				</select>
 			</td>
 		</tr>
-
 		<tr>
 			<td class="FormRowField">{$fixedLabel}</td>
 			<td class="FormRowValue">
 				<input type='checkbox' name='fixed' {$fixed_checked} />
 			</td>
 		</tr>
-
 		<tr>
 			<td class="FormRowField">{$authorLabel}</td>
 			<td class="FormRowValue">
@@ -63,7 +58,6 @@
 				<td class="FormRowField"><input type='checkbox' name='processServices' {$process_service_checked}/></td>
 			</tr>
 		{/if}
-
 	</table>
 	<div id="validForm">
 		<input type='hidden' name='selection' value='{$selection}' />

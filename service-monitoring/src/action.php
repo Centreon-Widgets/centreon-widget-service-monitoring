@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -47,7 +48,8 @@ require_once $centreon_path . 'www/class/centreonExternalCommand.class.php';
 session_start();
 
 try {
-    if (!isset($_SESSION['centreon']) ||
+    if (
+        !isset($_SESSION['centreon']) ||
         !isset($_REQUEST['cmd']) ||
         !isset($_REQUEST['selection'])
     ) {
@@ -71,13 +73,9 @@ try {
 
     $defaultDuration = 7200;
     $defaultScale = 's';
-    if (isset($centreon->optGen['monitoring_dwt_duration']) &&
-        $centreon->optGen['monitoring_dwt_duration']
-    ) {
+    if (!empty($centreon->optGen['monitoring_dwt_duration'])) {
         $defaultDuration = $centreon->optGen['monitoring_dwt_duration'];
-        if (isset($centreon->optGen['monitoring_dwt_duration_scale']) &&
-            $centreon->optGen['monitoring_dwt_duration_scale']
-        ) {
+        if (!empty($centreon->optGen['monitoring_dwt_duration_scale'])) {
             $defaultScale = $centreon->optGen['monitoring_dwt_duration_scale'];
         }
     }
@@ -111,35 +109,31 @@ try {
 
             /* Default ack options */
             $persistent_checked = '';
-            if (isset($centreon->optGen['monitoring_ack_persistent'])
-                && $centreon->optGen['monitoring_ack_persistent']
-            ) {
+            if (!empty($centreon->optGen['monitoring_ack_persistent'])) {
                 $persistent_checked = 'checked';
             }
             $template->assign('persistent_checked', $persistent_checked);
 
             $sticky_checked = '';
-            if (isset($centreon->optGen['monitoring_ack_sticky']) && $centreon->optGen['monitoring_ack_sticky']) {
+            if (!empty($centreon->optGen['monitoring_ack_sticky'])) {
                 $sticky_checked = 'checked';
             }
             $template->assign('sticky_checked', $sticky_checked);
 
             $notify_checked = '';
-            if (isset($centreon->optGen['monitoring_ack_notify']) && $centreon->optGen['monitoring_ack_notify']) {
+            if (!empty($centreon->optGen['monitoring_ack_notify'])) {
                 $notify_checked = 'checked';
             }
             $template->assign('notify_checked', $notify_checked);
 
             $process_service_checked = '';
-            if (isset($centreon->optGen['monitoring_ack_svc']) && $centreon->optGen['monitoring_ack_svc']) {
+            if (!empty($centreon->optGen['monitoring_ack_svc'])) {
                 $process_service_checked = 'checked';
             }
             $template->assign('process_service_checked', $process_service_checked);
 
             $force_active_checked = '';
-            if (isset($centreon->optGen['monitoring_ack_active_checks'])
-                && $centreon->optGen['monitoring_ack_active_checks']
-            ) {
+            if (!empty($centreon->optGen['monitoring_ack_active_checks'])) {
                 $force_active_checked = 'checked';
             }
             $template->assign('force_active_checked', $force_active_checked);
@@ -158,30 +152,28 @@ try {
             /* Default downtime options */
             $process_service_checked = '';
             $fixed_checked = '';
-            if (isset($centreon->optGen['monitoring_dwt_fixed']) && $centreon->optGen['monitoring_dwt_fixed']) {
+            if (!empty($centreon->optGen['monitoring_dwt_fixed'])) {
                 $fixed_checked = 'checked';
             }
             $template->assign('fixed_checked', $fixed_checked);
 
-            if (isset($centreon->optGen['monitoring_dwt_svc']) && $centreon->optGen['monitoring_dwt_svc']) {
+            if (!empty($centreon->optGen['monitoring_dwt_svc'])) {
                 $process_service_checked = 'checked';
             }
             $template->assign('process_service_checked', $process_service_checked);
-
             $template->assign('defaultMessage', sprintf(_('Downtime set by %s'), $centreon->user->alias));
-
             $template->assign('titleLabel', $title);
             $template->assign('submitLabel', _("Set Downtime"));
-            $template->assign('secondsLabel', _("seconds"));
-            $template->assign('minutesLabel', _("minutes"));
-            $template->assign('hoursLabel', _("hours"));
-            $template->assign('daysLabel', _("days"));
+            $template->assign('sDurationLabel', _("seconds"));
+            $template->assign('mDurationLabel', _("minutes"));
+            $template->assign('hDurationLabel', _("hours"));
+            $template->assign('dDurationLabel', _("days"));
             $template->assign('defaultDuration', $defaultDuration);
             $template->assign($defaultScale . 'DefaultScale', 'selected');
             $template->display('downtime.ihtml');
         }
     } else {
-        $command = "";
+        $command = '';
         $isSvcCommand = false;
         switch ($cmd) {
             /* service: schedule check */
@@ -243,7 +235,7 @@ try {
                 throw new Exception('Unknown command');
                 break;
         }
-        if ($command != "") {
+        if ($command != '') {
             $externalCommandMethod = 'set_process_command';
             if (method_exists($externalCmd, 'setProcessCommand')) {
                 $externalCommandMethod = 'setProcessCommand';
@@ -260,7 +252,7 @@ try {
                     $hostname = $hostObj->getHostName($hostId);
                     $svcDesc = $svcObj->getServiceDesc($svcId);
                     if ($isSvcCommand === true) {
-                        $cmdParam = $hostname . ";" . $svcDesc;
+                        $cmdParam = $hostname . ';' . $svcDesc;
                     } else {
                         $cmdParam = $hostname;
                     }
@@ -278,7 +270,7 @@ try {
         $result = 1;
     }
 } catch (Exception $e) {
-    echo $e->getMessage() . "<br/>";
+    echo $e->getMessage() . '<br/>';
 }
 
 ?>
@@ -307,9 +299,12 @@ try {
 
         //initializing datepicker and timepicker
         jQuery(".timepicker").each(function () {
-		if (! $(this).val()) {
-                	$(this).val(moment().tz(localStorage.getItem('realTimezone') ? localStorage.getItem('realTimezone') : moment.tz.guess()).format("HH:mm"));
-		}
+            if (!$(this).val()) {
+                $(this).val(moment().tz(localStorage.getItem('realTimezone')
+                    ? localStorage.getItem('realTimezone')
+                    : moment.tz.guess()).format("HH:mm")
+                );
+            }
         });
         jQuery("#start_time, #end_time").timepicker();
         initDatepicker();
