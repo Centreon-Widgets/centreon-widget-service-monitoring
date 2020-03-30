@@ -29,10 +29,10 @@
 			<td class="FormRowValue">
 				<input type='text' id='duration' name='duration' width='30' value='{$defaultDuration}' />
 				<select id="duration_scale" name="duration_scale">
-					<option value="s" {$sDefaultScale}>Seconds</option>
-					<option value="m" {$mDefaultScale}>Minutes</option>
-					<option value="h" {$hDefaultScale}>Hours</option>
-					<option value="d" {$dDefaultScale}>Days</option>
+					<option value="s" {$sDefaultScale}>{$secondsLabel}</option>
+					<option value="m" {$mDefaultScale}>{$minutesLabel}</option>
+					<option value="h" {$hDefaultScale}>{$hoursLabel}</option>
+					<option value="d" {$dDefaultScale}>{$daysLabel}</option>
 				</select>
 			</td>
 		</tr>
