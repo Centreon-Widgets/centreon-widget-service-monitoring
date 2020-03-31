@@ -246,9 +246,9 @@ if (isset($preferences['notification_filter']) && $preferences['notification_fil
 
 if (isset($preferences['downtime_filter']) && $preferences['downtime_filter']) {
     if ($preferences['downtime_filter'] == 'downtime') {
-        $query = CentreonUtils::conditionBuilder($query, ' s.scheduled_downtime_depth > 0 ');
+        $query = CentreonUtils::conditionBuilder($query, ' s.scheduled_downtime_depth > 0 OR h.scheduled_downtime_depth > 0 ');
     } elseif ($preferences['downtime_filter'] == 'ndowntime') {
-        $query = CentreonUtils::conditionBuilder($query, ' s.scheduled_downtime_depth = 0 ');
+        $query = CentreonUtils::conditionBuilder($query, ' s.scheduled_downtime_depth = 0 AND h.scheduled_downtime_depth = 0 ');
     }
 }
 
