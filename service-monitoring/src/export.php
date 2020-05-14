@@ -196,6 +196,7 @@ if (isset($preferences['hide_unreachable_host']) && $preferences['hide_unreachab
 if (count($stateTab)) {
     $query = CentreonUtils::conditionBuilder($query, " s.state IN (" . implode(',', $stateTab) . ")");
 }
+
 if (isset($preferences['acknowledgement_filter']) && $preferences['acknowledgement_filter']) {
     if ($preferences['acknowledgement_filter'] == "ack") {
         $query = CentreonUtils::conditionBuilder($query, " s.acknowledged = 1");
@@ -206,6 +207,7 @@ if (isset($preferences['acknowledgement_filter']) && $preferences['acknowledgeme
         );
     }
 }
+
 if (isset($preferences['notification_filter']) && $preferences['notification_filter']) {
     if ($preferences['notification_filter'] == "enabled") {
         $query = CentreonUtils::conditionBuilder($query, " s.notify = 1");
@@ -213,6 +215,7 @@ if (isset($preferences['notification_filter']) && $preferences['notification_fil
         $query = CentreonUtils::conditionBuilder($query, " s.notify = 0");
     }
 }
+
 if (isset($preferences['downtime_filter']) && $preferences['downtime_filter']) {
     if ($preferences['downtime_filter'] == "downtime") {
         $query = CentreonUtils::conditionBuilder($query, " s.scheduled_downtime_depth > 0 ");
@@ -220,6 +223,7 @@ if (isset($preferences['downtime_filter']) && $preferences['downtime_filter']) {
         $query = CentreonUtils::conditionBuilder($query, " s.scheduled_downtime_depth = 0 ");
     }
 }
+
 if (isset($preferences['state_type_filter']) && $preferences['state_type_filter']) {
     if ($preferences['state_type_filter'] == "hardonly") {
         $query = CentreonUtils::conditionBuilder($query, " s.state_type = 1 ");
@@ -227,6 +231,27 @@ if (isset($preferences['state_type_filter']) && $preferences['state_type_filter'
         $query = CentreonUtils::conditionBuilder($query, " s.state_type = 0 ");
     }
 }
+
+if (isset($preferences['poller']) && $preferences['poller']) {
+    $resultsPoller = explode(',', $preferences['poller']);
+    $queryPoller = '';
+
+    foreach ($resultsPoller as $resultPoller) {
+        if ($queryPoller != '') {
+            $queryPoller .= ', ';
+        }
+        $queryPoller .= ':instance_id_' . $resultPoller;
+
+        $mainQueryParameters[] = [
+            'parameter' => ':instance_id_' . $resultPoller,
+            'value' => (int)$resultPoller,
+            'type' => PDO::PARAM_INT
+        ];
+    }
+    $instanceIdCondition = ' i.instance_id IN (' . $queryPoller . ')';
+    $query = CentreonUtils::conditionBuilder($query, $instanceIdCondition);
+}
+
 if (isset($preferences['hostgroup']) && $preferences['hostgroup']) {
     $results = explode(',', $preferences['hostgroup']);
     $queryHG = '';
@@ -234,9 +259,9 @@ if (isset($preferences['hostgroup']) && $preferences['hostgroup']) {
         if ($queryHG != '') {
             $queryHG .= ', ';
         }
-        $queryHG .= ":id_" . $result;
+        $queryHG .= ":hg_id_" . $result;
         $mainQueryParameters[] = [
-            'parameter' => ':id_' . $result,
+            'parameter' => ':hg_id_' . $result,
             'value' => (int)$result,
             'type' => PDO::PARAM_INT
         ];
@@ -250,6 +275,7 @@ if (isset($preferences['hostgroup']) && $preferences['hostgroup']) {
         )"
     );
 }
+
 if (isset($preferences['servicegroup']) && $preferences['servicegroup']) {
     $resultsSG = explode(',', $preferences['servicegroup']);
     $querySG = '';
@@ -257,9 +283,9 @@ if (isset($preferences['servicegroup']) && $preferences['servicegroup']) {
         if ($querySG != '') {
             $querySG .= ', ';
         }
-        $querySG .= ":id_" . $resultSG;
+        $querySG .= ":sg_id_" . $resultSG;
         $mainQueryParameters[] = [
-            'parameter' => ':id_' . $resultSG,
+            'parameter' => ':sg_id_' . $resultSG,
             'value' => (int)$resultSG,
             'type' => PDO::PARAM_INT
         ];
@@ -273,13 +299,14 @@ if (isset($preferences['servicegroup']) && $preferences['servicegroup']) {
         )"
     );
 }
+
 if  (!empty($preferences['criticality_filter'])) {
     $tab = explode(',', $preferences['criticality_filter']);
     $labels = [];
     foreach ($tab as $p) {
-        $labels[] = ":id_". $p;
+        $labels[] = ":severity_id_". $p;
         $mainQueryParameters[] = [
-            'parameter' => ':id_' . $p,
+            'parameter' => ':severity_id_' . $p,
             'value' => (int) $p,
             'type' => PDO::PARAM_INT
         ];
@@ -289,6 +316,7 @@ if  (!empty($preferences['criticality_filter'])) {
         'cv2.value IN (' . implode(',', $labels) . ')'
     );
 }
+
 if (isset($preferences['output_search']) && $preferences['output_search'] != "") {
     $tab = explode(" ", $preferences['output_search']);
     $op = $tab[0];
@@ -305,6 +333,7 @@ if (isset($preferences['output_search']) && $preferences['output_search'] != "")
         $query = CentreonUtils::conditionBuilder($query, $serviceOutputCondition);
     }
 }
+
 if (!$centreon->user->admin) {
     $aclObj = new CentreonACL($centreon->user->user_id, $centreon->user->admin);
     $groupList = $aclObj->getAccessGroupsString();
@@ -312,6 +341,7 @@ if (!$centreon->user->admin) {
         AND acl.service_id = s.service_id
         AND acl.group_id IN (" . $groupList . ")";
 }
+
 $orderby = " hostname ASC , description ASC";
 if (isset($preferences['order_by']) && $preferences['order_by'] != "") {
     $orderby = $preferences['order_by'];
