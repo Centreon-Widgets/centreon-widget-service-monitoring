@@ -81,3 +81,28 @@ jQuery(function () {
     loadToolBar();
     loadPage();
 });
+
+/**
+ * retrieve selected resources
+ */
+function exportChecked() {
+    let exportList = '';
+    // get checked resource list from local storage
+    $(".selection").each(function () {
+        var itemSaved = 'w_sm_' + $(this).attr('id');
+        let toRemove = 'w_sm_selection_'
+        // each selected resource is like idHost;idSvc
+        if (localStorage.getItem(itemSaved)) {
+            exportList += itemSaved.substring(toRemove.length, itemSaved.length) + ',';
+        }
+    });
+    // remove last comma
+    exportList = exportList.substring(0, exportList.length - 1);
+
+    // if at least one resource is found, redirect to the export.php
+    if (0 < exportList.length) {
+        window.location.href = './src/export.php?widgetId=' + widgetId + '&list=' + exportList;
+    } else {
+        alert('Please select at least one resource');
+    }
+}
