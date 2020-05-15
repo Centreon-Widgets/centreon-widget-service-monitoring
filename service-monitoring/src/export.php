@@ -51,7 +51,7 @@ require_once $centreon_path . 'www/class/centreonMedia.class.php';
 require_once $centreon_path . 'www/class/centreonCriticality.class.php';
 
 session_start();
-if (!isset($_SESSION['centreon'], $_REQUEST['widgetId'], $_GET['list'])) {
+if (!isset($_SESSION['centreon'], $_GET['widgetId'], $_GET['list'])) {
     // As the header is already defined, if one of these parameters is missing, an empty CSV is exported
     exit();
 }
