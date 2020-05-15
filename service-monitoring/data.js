@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -40,9 +39,9 @@ function loadPage()
 {
     jQuery.ajax("./src/index.php?widgetId=" + widgetId + "&page=" + pageNumber, {
         success: function (htmlData) {
-            jQuery("#serviceMonitoringTable").empty().append(htmlData).append(function() {
+            jQuery("#serviceMonitoringTable").empty().append(htmlData).append(function () {
                 var horizontalScrollHeight = 0;
-                if ( jQuery("#serviceMonitoringTable").outerWidth() < jQuery("#serviceMonitoringTable").get(0).scrollWidth) {
+                if (jQuery("#serviceMonitoringTable").outerWidth() < jQuery("#serviceMonitoringTable").get(0).scrollWidth) {
                     horizontalScrollHeight = 20;
                 }
                 var h = jQuery("#serviceMonitoringTable").prop("scrollHeight") + horizontalScrollHeight;
