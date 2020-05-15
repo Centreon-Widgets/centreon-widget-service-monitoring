@@ -387,8 +387,8 @@ $res->execute();
 
 $nbRows = $res->rowCount();
 $data = array();
-$outputLength = $preferences['output_length'] ?: 50;
-$commentLength = $preferences['comment_length'] ?: 50;
+$outputLength = $preferences['output_length'] ?? 50;
+$commentLength = $preferences['comment_length'] ?? 50;
 
 $hostObj = new CentreonHost($db);
 $svcObj = new CentreonService($db);
