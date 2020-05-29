@@ -262,12 +262,22 @@ if (isset($preferences['state_type_filter']) && $preferences['state_type_filter'
 }
 
 if (isset($preferences['poller']) && $preferences['poller']) {
-    $mainQueryParameters[] = [
-        'parameter' => ':instance_id',
-        'value' => $preferences['poller'],
-        'type' => PDO::PARAM_INT
-    ];
-    $instanceIdCondition = ' i.instance_id = :instance_id';
+    $resultsPoller = explode(',', $preferences['poller']);
+    $queryPoller = '';
+
+    foreach ($resultsPoller as $resultPoller) {
+        if ($queryPoller != '') {
+            $queryPoller .= ', ';
+        }
+        $queryPoller .= ':instance_id_' . $resultPoller;
+
+        $mainQueryParameters[] = [
+            'parameter' => ':instance_id_' . $resultPoller,
+            'value' => (int)$resultPoller,
+            'type' => PDO::PARAM_INT
+        ];
+    }
+    $instanceIdCondition = ' i.instance_id IN (' . $queryPoller . ')';
     $query = CentreonUtils::conditionBuilder($query, $instanceIdCondition);
 }
 
@@ -278,9 +288,9 @@ if (isset($preferences['hostgroup']) && $preferences['hostgroup']) {
         if ($queryHG != '') {
             $queryHG .= ', ';
         }
-        $queryHG .= ":id_" . $result;
+        $queryHG .= ":hg_id_" . $result;
         $mainQueryParameters[] = [
-            'parameter' => ':id_' . $result,
+            'parameter' => ':hg_id_' . $result,
             'value' => (int)$result,
             'type' => PDO::PARAM_INT
         ];
@@ -294,6 +304,7 @@ if (isset($preferences['hostgroup']) && $preferences['hostgroup']) {
         )"
     );
 }
+
 if (isset($preferences['servicegroup']) && $preferences['servicegroup']) {
     $resultsSG = explode(',', $preferences['servicegroup']);
     $querySG = '';
@@ -301,9 +312,9 @@ if (isset($preferences['servicegroup']) && $preferences['servicegroup']) {
         if ($querySG != '') {
             $querySG .= ', ';
         }
-        $querySG .= ":id_" . $resultSG;
+        $querySG .= ":sg_id_" . $resultSG;
         $mainQueryParameters[] = [
-            'parameter' => ':id_' . $resultSG,
+            'parameter' => ':sg_id_' . $resultSG,
             'value' => (int)$resultSG,
             'type' => PDO::PARAM_INT
         ];
@@ -321,9 +332,9 @@ if  (!empty($preferences['criticality_filter'])) {
     $tab = explode(',', $preferences['criticality_filter']);
     $labels = [];
     foreach ($tab as $p) {
-        $labels[] = ":id_". $p;
+        $labels[] = ":severity_id_". $p;
         $mainQueryParameters[] = [
-            'parameter' => ':id_' . $p,
+            'parameter' => ':severity_id_' . $p,
             'value' => (int) $p,
             'type' => PDO::PARAM_INT
         ];

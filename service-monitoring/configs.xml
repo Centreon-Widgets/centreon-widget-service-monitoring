@@ -37,7 +37,7 @@
       <option value="hardonly" label="Hard Only"/>
       <option value="softonly" label="Soft Only"/>
     </preference>
-    <preference label="Poller" name="poller" defaultValue="" type="poller"/>
+    <preference label="Poller" name="poller" defaultValue="" type="pollerMulti"/>
     <preference label="Hostgroup" name="hostgroup" defaultValue="" type="hostGroupMulti"/>
     <preference label="Servicegroup" name="servicegroup" defaultValue="" type="serviceGroupMulti"/>
     <preference label="Results" name="entries" defaultValue="10" type="range" min="10" max="100" step="10"/>
