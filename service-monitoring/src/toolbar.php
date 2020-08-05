@@ -135,10 +135,14 @@ jQuery( function() {
                 parent.jQuery('#widgetPopin').parent().remove();
                 var popin = parent.jQuery('<div id="widgetPopin">');
 
-                popin.centreonPopin({
+                if (popin.centreonPopin({
                   open:true,
                   url:url
-                  });
+                })) {
+                    $.each(checkValues.split(','), function(index, value) {
+                        localStorage.removeItem('w_sh_selection_' + value);
+                    });
+                }
 
             } else {
                 alert("<?php echo _('Please select one or more items'); ?>");
