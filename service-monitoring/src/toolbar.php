@@ -140,7 +140,6 @@ jQuery( function() {
                     url: url,
                     onClose: () => {
                         checkValues.split(',').forEach((value) => {
-                            console.log(value);
                             localStorage.removeItem('w_sm_selection_' + value);
                         });
                     }
