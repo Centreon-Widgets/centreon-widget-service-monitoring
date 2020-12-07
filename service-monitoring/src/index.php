@@ -317,6 +317,56 @@ if (isset($preferences['servicegroup']) && $preferences['servicegroup']) {
         )"
     );
 }
+if (isset($preferences['hostcategory']) && $preferences['hostcategory']) {
+    $results = explode(',', $preferences['hostcategory']);
+    $queryHC ='';
+    foreach ($results as $result) {
+        if ($queryHC != '') {
+            $queryHC .= ', ';
+        }
+        $queryHC .= ":id_" . $result;
+        $mainQueryParameters[] = [
+            'parameter' => ':id_' . $result,
+            'value' => (int)$result,
+            'type' => PDO::PARAM_INT
+        ];
+    }
+    $query = CentreonUtils::conditionBuilder(
+        $query,
+        " s.host_id IN (
+            SELECT host_host_id
+            FROM " . $conf_centreon['db'] . ".hostcategories_relation
+            WHERE hostcategories_hc_id IN (" . $queryHC . ")
+        )"
+    );
+}
+if (isset($preferences['servicecategory']) && $preferences['servicecategory']) {
+    $results = explode(',', $preferences['servicecategory']);
+    $querySC ='';
+    foreach ($results as $result) {
+        if ($querySC != '') {
+            $querySC .= ', ';
+        }
+        $querySC .= ":id_" . $result;
+        $mainQueryParameters[] = [
+            'parameter' => ':id_' . $result,
+            'value' => (int)$result,
+            'type' => PDO::PARAM_INT
+        ];
+    }
+    $query = CentreonUtils::conditionBuilder(
+        $query,
+        " s.service_id IN (
+            SELECT service_id
+            FROM " . $conf_centreon['db'] . ".service
+            WHERE service_template_model_stm_id IN (
+              SELECT service_service_id
+              FROM " . $conf_centreon['db'] . ".service_categories_relation
+              WHERE sc_id IN (" . $querySC . ")
+            )
+        )"
+    );
+}
 if  (!empty($preferences['criticality_filter'])) {
     $tab = explode(',', $preferences['criticality_filter']);
     $labels = [];
