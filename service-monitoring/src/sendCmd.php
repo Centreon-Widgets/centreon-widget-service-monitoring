@@ -47,7 +47,8 @@ require_once $centreon_path . 'www/class/centreonUtils.class.php';
 session_start();
 
 try {
-    if (!isset($_SESSION['centreon']) ||
+    if (
+        !isset($_SESSION['centreon']) ||
         !isset($_POST['cmdType']) ||
         !isset($_POST['selection']) ||
         !isset($_POST['author']) ||
